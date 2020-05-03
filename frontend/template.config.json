@@ -1,0 +1,4 @@
+{
+    "name": "Common Page Template",
+    "variables": ["pageName", "initialStateType", "reducerType"]
+}
