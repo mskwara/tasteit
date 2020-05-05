@@ -34,8 +34,8 @@ export default {
     methods: {
         display() {
             if (!this.displayed)
-                return "opacity: 0; height: 0 ; transition: height 0ms 1s, opacity 1s 0ms";
-            return "opacity: 1 ; height: 100% ; transition: height 0ms 0ms, opacity 1s 0ms";
+                return "opacity: 0; height: 0 ; top: -200px ; transition: height 0ms 1s, opacity 1s 0ms, top 0ms 1s";
+            return "opacity: 1 ; height: 100% ;top: 0 ; transition: height 0ms 0ms, opacity 1s 0ms, top 0ms 0s";
         },
         accept() {
             this.displayed = false;

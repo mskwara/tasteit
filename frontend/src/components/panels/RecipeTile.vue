@@ -58,14 +58,13 @@ export default {
         align-items: center;
 
         &:hover .loader {
-            animation-name: loader;
-            animation-duration: 1s;
-            animation-fill-mode: forwards;
+            width: 100%;
+            transition: width 1s;
         }
     }
 
     .banner {
-        background-color: $primary;
+        background-color: $primary-100;
         width: 410px;
         height: 40px;
         border: 1px solid rgb(114, 114, 114);
@@ -88,8 +87,9 @@ export default {
     .loader {
         height: 5px;
         width: 0;
-        background-color: $primary-200;
+        background-color: $primary-300;
         align-self: flex-start;
+        transition: width 1s;
     }
     .cover {
         width: 400px;
@@ -134,15 +134,6 @@ export default {
         p {
             margin: 5px;
             text-align: left;
-        }
-    }
-
-    @keyframes loader {
-        from {
-            width: 0%;
-        }
-        to {
-            width: 100%;
         }
     }
 }

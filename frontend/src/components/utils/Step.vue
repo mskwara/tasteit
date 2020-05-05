@@ -1,11 +1,7 @@
 <template>
     <div id="step">
-        <div class="header">
-            {{ header }}
-        </div>
-        <p>
-            {{ content }}
-        </p>
+        <div class="header">{{ header }}</div>
+        <p>{{ content }}</p>
     </div>
 </template>
 
@@ -36,7 +32,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: $primary;
+        background-color: $primary-100;
         color: white;
         position: relative;
         left: -30px;

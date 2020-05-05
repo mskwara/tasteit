@@ -79,7 +79,7 @@ export default {
         margin: 0 20px;
     }
     .progress-bar {
-        background-color: $primary-300;
+        background-color: $primary-400;
         height: 20px;
         transition: width 1s;
         mix-blend-mode: screen;

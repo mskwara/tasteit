@@ -1,5 +1,13 @@
 <template>
-    <div class="button" @click="clickAction()" :style="checkDisabled()">{{ text }}</div>
+    <div
+        id="mybutton"
+        :class="type"
+        @click="clickAction()"
+        :style="checkDisabled()"
+    >
+        {{ text }}
+        <div class="bottom-line" v-if="type === 'empty'" />
+    </div>
 </template>
 
 <script>
@@ -9,11 +17,15 @@ export default {
     props: {
         text: String,
         click: Function,
-        disabled: Boolean
+        disabled: Boolean,
+        type: {
+            type: String,
+            default: "default"
+        }
     },
     methods: {
         clickAction() {
-            if (this.disabled) {
+            if (this.disabled || this.click == null) {
                 return;
             }
             this.click();
@@ -28,20 +40,44 @@ export default {
 
 <style scoped lang="scss">
 @import "../../styles/styles.scss";
-.button {
+#mybutton {
     width: 130px;
     height: 40px;
-    background-color: $primary;
     font-size: 13pt;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    color: white;
     border-radius: 2px;
     margin: 5px;
-}
-.button:hover {
-    background-color: $primary-100;
-    cursor: pointer;
+
+    &.default {
+        background-color: $primary-100;
+        color: white;
+    }
+    &.empty {
+        background-color: white;
+        color: $text-color;
+
+        .bottom-line {
+            width: 40%;
+            margin-top: 5px;
+            border-bottom: 1px solid $border-100;
+            transition: width 0.5s;
+        }
+
+        &:hover {
+            background-color: white;
+            .bottom-line {
+                width: 20%;
+                transition: width 0.5s;
+            }
+        }
+    }
+
+    &:hover {
+        background-color: $primary-200;
+        cursor: pointer;
+    }
 }
 </style>

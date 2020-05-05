@@ -22,7 +22,7 @@ export default {
     .dot {
         width: 12px;
         height: 12px;
-        background-color: $primary-100;
+        background-color: $primary-200;
         position: relative;
         animation-name: spinner;
         animation-duration: 1s;

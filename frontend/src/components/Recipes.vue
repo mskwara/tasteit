@@ -1,25 +1,27 @@
 <template>
-    <div id="recipes">
-        <recipe-tile
-            :key="recipe._id"
-            v-for="recipe in recipes"
-            :recipe="recipe"
-        />
+    <div>
+        <spinner v-if="loading" />
+        <div id="recipes">
+            <recipe-tile :key="recipe._id" v-for="recipe in recipes" :recipe="recipe" />
+        </div>
     </div>
 </template>
 
 <script>
 import RecipeTile from "./panels/RecipeTile";
+import Spinner from "./utils/Spinner";
 const axios = require("axios");
 
 export default {
     name: "Recipes",
     components: {
-        RecipeTile
+        RecipeTile,
+        Spinner
     },
     data() {
         return {
-            recipes: Array
+            recipes: Array,
+            loading: true
         };
     },
     async mounted() {
@@ -27,6 +29,7 @@ export default {
             const response = await axios.get("recipes");
             // console.log(response);
             this.recipes = response.data.data.recipes;
+            this.loading = false;
         } catch (error) {
             console.error(error);
         }

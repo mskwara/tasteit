@@ -1,5 +1,7 @@
 exports.setRoute = function(link, params) {
-    this.$router.push({ name: link, params: params });
+    if (this.$route.name != link) {
+        this.$router.push({ name: link, params: params });
+    }
 };
 
 exports.formatSecToTime = sec => {

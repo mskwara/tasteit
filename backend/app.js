@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const recipeRouter = require("./routes/recipeRouter");
+const userRouter = require("./routes/userRouter");
 const globalErrorHandler = require("./controllers/errorController");
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json({ limit: "10kb" }));
 
 // ROUTES
 app.use("/api/v1/recipes", recipeRouter);
+app.use("/api/v1/users", userRouter);
 
 app.use(globalErrorHandler);
 
