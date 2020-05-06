@@ -29,7 +29,7 @@ export default {
 #ingredients {
     width: 30%;
     height: fit-content;
-    border: 1px solid $border-100;
+    border: 1px solid $border-400;
     background-color: white;
     min-width: 300px;
 

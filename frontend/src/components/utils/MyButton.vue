@@ -1,10 +1,5 @@
 <template>
-    <div
-        id="mybutton"
-        :class="type"
-        @click="clickAction()"
-        :style="checkDisabled()"
-    >
+    <div id="mybutton" :class="type" @click="clickAction()" :style="checkDisabled()">
         {{ text }}
         <div class="bottom-line" v-if="type === 'empty'" />
     </div>
@@ -50,34 +45,42 @@ export default {
     align-items: center;
     border-radius: 2px;
     margin: 5px;
+    transition: 0.5s;
 
     &.default {
         background-color: $primary-100;
         color: white;
     }
     &.empty {
-        background-color: white;
+        background: none;
         color: $text-color;
 
         .bottom-line {
             width: 40%;
             margin-top: 5px;
-            border-bottom: 1px solid $border-100;
+            border-bottom: 1px solid $border-400;
             transition: width 0.5s;
         }
 
         &:hover {
-            background-color: white;
+            background: none;
             .bottom-line {
                 width: 20%;
                 transition: width 0.5s;
             }
         }
     }
+    &.full {
+        width: 90%;
+        background-color: $primary-100;
+        margin: 0;
+        color: white;
+    }
 
     &:hover {
         background-color: $primary-200;
         cursor: pointer;
+        transition: 0.5s;
     }
 }
 </style>

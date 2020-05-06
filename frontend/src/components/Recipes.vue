@@ -44,9 +44,5 @@ export default {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-
-    .box {
-        background-color: red;
-    }
 }
 </style>

@@ -1,10 +1,12 @@
 <template>
-    <div id="app">
-        <sidebar />
-        <div :class="sidebarStatus">
-            <top-bar />
-            <router-view></router-view>
-            <alert />
+    <div>
+        <div id="app">
+            <sidebar />
+            <div :class="sidebarStatus">
+                <top-bar />
+                <router-view></router-view>
+                <alert />
+            </div>
         </div>
     </div>
 </template>
@@ -14,16 +16,32 @@ import Alert from "./components/utils/Alert";
 import TopBar from "./components/panels/TopBar";
 import Sidebar from "./components/panels/Sidebar";
 import EventBus from "./services/event-bus.js";
+import UserData from "./services/user-data.js";
+const axios = require("axios");
 
 export default {
     name: "App",
     components: { Alert, TopBar, Sidebar },
     data() {
         return {
-            sidebarStatus: "sidebar-closed"
+            sidebarStatus: "sidebar-closed",
+            UserData
         };
     },
-    mounted() {
+    async mounted() {
+        const response = await axios.get("/users/isloggedin");
+
+        const user = response.data.data.user;
+        if (user != null) {
+            UserData.id = user._id;
+            UserData.name = user.name;
+            UserData.surname = user.surname;
+            UserData.avatar = user.avatar;
+        } else {
+            UserData.id = null;
+        }
+        EventBus.$emit("update-user-data");
+
         EventBus.$on("open-sidebar", () => {
             this.sidebarStatus = "sidebar-opened";
         });

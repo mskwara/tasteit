@@ -8,6 +8,8 @@ router.route("/").get(userController.getAllUsers);
 
 router.route("/signup").post(authController.signup);
 router.route("/login").post(authController.login);
+router.route("/logout").post(authController.logout);
+router.route("/isloggedin").get(authController.isLoggedIn);
 
 // router
 //     .route("/:id")

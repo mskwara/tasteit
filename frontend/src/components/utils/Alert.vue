@@ -63,7 +63,7 @@ export default {
         left: 50%;
         top: 50%;
         background-color: white;
-        border: 1px solid $border-100;
+        border: 1px solid $border-400;
         border-radius: 2px;
         width: 400px;
         height: 200px;

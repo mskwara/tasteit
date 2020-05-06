@@ -1,0 +1,103 @@
+<template>
+    <div id="login">
+        <p class="title">Login</p>
+        <divider />
+        <div class="content">
+            <my-input class="field" type="text" field="Email" width="80%" v-model="email" />
+            <my-input
+                class="field"
+                type="password"
+                field="Password"
+                width="80%"
+                v-model="password"
+            />
+            <a class="no-account" @click="setRoute('signup', {})">I don't have an account</a>
+            <my-button text="Login" :click="login" />
+        </div>
+    </div>
+</template>
+
+<script>
+import Divider from "./utils/Divider";
+import MyInput from "./utils/MyInput";
+import MyButton from "./utils/MyButton";
+import { setRoute } from "../services/methods.js";
+import UserData from "../services/user-data.js";
+import EventBus from "../services/event-bus.js";
+const axios = require("axios");
+
+export default {
+    name: "Login",
+    components: { Divider, MyInput, MyButton },
+    data() {
+        return {
+            email: "",
+            password: ""
+        };
+    },
+    methods: {
+        setRoute,
+        async login() {
+            try {
+                const response = await axios.post("users/login", {
+                    email: this.email,
+                    password: this.password
+                });
+                const user = response.data.data.user;
+                // this.clearInputs();
+
+                UserData.id = user._id;
+                UserData.name = user.name;
+                UserData.surname = user.surname;
+                UserData.avatar = user.avatar;
+                EventBus.$emit("update-user-data");
+                this.setRoute("recipes", {});
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        clearInputs() {
+            this.email = "";
+            this.password = "";
+        }
+    }
+};
+</script>
+
+<style scoped lang="scss">
+@import "../styles/styles.scss";
+
+#login {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .title {
+        font-size: 40pt;
+        margin: 0;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+    .content {
+        width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        a {
+            color: $primary-200;
+            font-size: 10pt;
+            cursor: pointer;
+            margin-right: 10%;
+            margin-bottom: 10px;
+        }
+
+        .field {
+            margin-bottom: 20px;
+        }
+        .no-account {
+            align-self: flex-end;
+        }
+    }
+}
+</style>

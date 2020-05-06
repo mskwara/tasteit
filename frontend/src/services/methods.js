@@ -22,3 +22,10 @@ exports.formatSecToTime = sec => {
     }
     return result;
 };
+
+exports.clearUserData = userdata => {
+    userdata.id = null;
+    userdata.name = "";
+    userdata.surname = "";
+    userdata.avatar = "";
+};
