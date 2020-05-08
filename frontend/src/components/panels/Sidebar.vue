@@ -6,7 +6,12 @@
                 <p>{{user.name}} {{user.surname}}</p>
             </div>
             <div class="menu" v-if="user.id != null">
-                <my-button class="button" text="Create a new recipe" type="full" />
+                <my-button
+                    class="button"
+                    text="Create a new recipe"
+                    type="full"
+                    :click="setRouteWrap.bind(null, 'recipecreator', {})"
+                />
                 <div class="link">My recipes</div>
                 <div class="link">Favourites</div>
                 <div class="link">My profile</div>
@@ -17,10 +22,10 @@
                     class="button"
                     text="Sign up"
                     type="full"
-                    :click="setRoute.bind(null, 'signup', {})"
+                    :click="setRouteWrap.bind(null, 'signup', {})"
                 />
-                <div class="link" @click="setRoute('recipes', {})">Recipes</div>
-                <div class="link" @click="setRoute('login', {})">Login</div>
+                <div class="link" @click="setRouteWrap('recipes', {})">Recipes</div>
+                <div class="link" @click="setRouteWrap('login', {})">Login</div>
             </div>
             <div class="footer">
                 <p>{{footer}}</p>
@@ -54,6 +59,10 @@ export default {
     methods: {
         clearUserData,
         setRoute,
+        setRouteWrap(link, params) {
+            this.setRoute(link, params);
+            EventBus.$emit("close-sidebar");
+        },
         getAvatarPath() {
             if (this.user.id != null) {
                 return require("../../assets/" + this.user.avatar);
@@ -63,6 +72,7 @@ export default {
             await axios.post("/users/logout");
             this.clearUserData(UserData);
             EventBus.$emit("update-user-data");
+            EventBus.$emit("close-sidebar");
         }
     },
     mounted() {

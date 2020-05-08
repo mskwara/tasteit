@@ -34,8 +34,8 @@ export default {
     methods: {
         display() {
             if (!this.displayed)
-                return "opacity: 0; height: 0 ; top: -200px ; transition: height 0ms 1s, opacity 1s 0ms, top 0ms 1s";
-            return "opacity: 1 ; height: 100% ;top: 0 ; transition: height 0ms 0ms, opacity 1s 0ms, top 0ms 0s";
+                return "opacity: 0; height: 0 ; top: -200px ; transition: height 0ms 0.5s, opacity 0.5s 0ms, top 0ms 0.5s";
+            return "opacity: 1 ; height: 100% ;top: 0 ; transition: height 0ms 0ms, opacity 0.5s 0ms, top 0ms 0s";
         },
         accept() {
             this.displayed = false;
@@ -49,7 +49,7 @@ export default {
 #page {
     width: 100%;
     height: 0;
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     background-color: rgba(0, 0, 0, 0.205);
@@ -64,7 +64,7 @@ export default {
         top: 50%;
         background-color: white;
         border: 1px solid $border-400;
-        border-radius: 2px;
+        border-radius: 3px;
         width: 400px;
         height: 200px;
         display: flex;

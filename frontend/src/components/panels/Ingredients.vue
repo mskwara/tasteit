@@ -39,6 +39,7 @@ export default {
         p {
             margin: 10px 3px;
             display: inline;
+            text-transform: uppercase;
         }
     }
     .content {

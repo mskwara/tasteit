@@ -9,7 +9,7 @@
             <div class="icons-section">
                 <div class="icon">
                     <img src="../../assets/time.svg" />
-                    <p>{{ recipe.preparationTime }} min</p>
+                    <p v-if="recipe.preparationTime">{{ recipe.preparationTime }} min</p>
                 </div>
                 <div class="icon">
                     <img src="../../assets/difficulty.svg" />
@@ -21,11 +21,13 @@
             </div>
             <div class="button-section">
                 <my-button
+                    v-if="active"
                     text="Check out"
                     :click="
                         setRoute.bind(null, `recipe`, { id: this.recipe._id })
                     "
                 />
+                <my-button v-else text="Check out" />
             </div>
         </div>
     </div>
@@ -38,7 +40,13 @@ import { setRoute } from "../../services/methods";
 export default {
     name: "App",
     components: { MyButton },
-    props: { recipe: Object },
+    props: {
+        recipe: Object,
+        active: {
+            type: Boolean,
+            default: true
+        }
+    },
     methods: {
         setRoute
     }

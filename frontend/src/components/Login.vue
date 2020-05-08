@@ -43,6 +43,7 @@ export default {
                     email: this.email,
                     password: this.password
                 });
+
                 const user = response.data.data.user;
                 // this.clearInputs();
 
@@ -53,7 +54,23 @@ export default {
                 EventBus.$emit("update-user-data");
                 this.setRoute("recipes", {});
             } catch (error) {
-                console.error(error);
+                if (error.response.status === 401) {
+                    EventBus.$emit("show-alert", {
+                        title: "Something went wrong...",
+                        content: "Invalid email or password!"
+                    });
+                } else if (error.response.status === 400) {
+                    EventBus.$emit("show-alert", {
+                        title: "Something went wrong...",
+                        content: "Please fill empty fields!"
+                    });
+                } else {
+                    EventBus.$emit("show-alert", {
+                        title: "Something went wrong...",
+                        content:
+                            "There is a problem with the server... Please try to login later!"
+                    });
+                }
             }
         },
         clearInputs() {

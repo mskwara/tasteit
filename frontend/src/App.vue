@@ -60,6 +60,7 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: $text-color;
+    margin-top: 90px;
 
     .sidebar-closed {
         margin-left: 0;

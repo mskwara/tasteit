@@ -1,5 +1,5 @@
 <template>
-    <div id="mybutton" :class="type" @click="clickAction()" :style="checkDisabled()">
+    <div id="mybutton" :style="checkDisabled()" :class="type" @click="clickAction()">
         {{ text }}
         <div class="bottom-line" v-if="type === 'empty'" />
     </div>

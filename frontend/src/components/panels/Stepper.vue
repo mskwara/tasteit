@@ -27,7 +27,8 @@
         <div class="content" v-else>
             <div class="top">Review</div>
             <div class="bottom">
-                <my-button text="Send a review" :click="sendReview" class="button" />
+                <my-button text="Send a review" :click="sendReview" class="button" v-if="active" />
+                <my-button text="Send a review" class="button" v-else />
             </div>
         </div>
     </div>
@@ -43,7 +44,13 @@ import EventBus from "../../services/event-bus.js";
 export default {
     name: "Stepper",
     components: { Divider, MyButton, Step, Counter },
-    props: { steps: Array },
+    props: {
+        steps: Array,
+        active: {
+            type: Boolean,
+            default: true
+        }
+    },
     data() {
         return {
             step: -1

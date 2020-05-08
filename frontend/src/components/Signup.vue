@@ -50,25 +50,44 @@ export default {
     methods: {
         setRoute,
         async signup() {
-            try {
-                const response = await axios.post("users/signup", {
-                    name: this.name,
-                    surname: this.surname,
-                    email: this.email,
-                    password: this.password,
-                    passwordConfirm: this.passwordConfirm
-                });
-                const user = response.data.data.user;
-                // this.clearInputs();
+            if (
+                this.checkField(this.name, "name", 2) &&
+                this.checkField(this.surname, "surname", 2) &&
+                this.checkField(this.email, "email", 5) &&
+                this.checkField(this.password, "password", 6) &&
+                this.checkField(this.passwordConfirm, "password-confirm", 6)
+            ) {
+                try {
+                    const response = await axios.post("users/signup", {
+                        name: this.name,
+                        surname: this.surname,
+                        email: this.email,
+                        password: this.password,
+                        passwordConfirm: this.passwordConfirm
+                    });
+                    const user = response.data.data.user;
+                    // this.clearInputs();
 
-                UserData.id = user._id;
-                UserData.name = user.name;
-                UserData.surname = user.surname;
-                UserData.avatar = user.avatar;
-                EventBus.$emit("update-user-data");
-                this.setRoute("recipes", {});
-            } catch (error) {
-                console.error(error);
+                    UserData.id = user._id;
+                    UserData.name = user.name;
+                    UserData.surname = user.surname;
+                    UserData.avatar = user.avatar;
+                    EventBus.$emit("update-user-data");
+                    this.setRoute("recipes", {});
+                } catch (error) {
+                    if (error.response.status === 400) {
+                        EventBus.$emit("show-alert", {
+                            title: "Something went wrong...",
+                            content: "Please provide valid data!"
+                        });
+                    } else if (error.response.status === 500) {
+                        EventBus.$emit("show-alert", {
+                            title: "Something went wrong...",
+                            content:
+                                "There is a problem with the server... Please try to sign up later!"
+                        });
+                    }
+                }
             }
         },
         clearInputs() {
@@ -77,6 +96,16 @@ export default {
             this.email = "";
             this.password = "";
             this.passwordConfirm = "";
+        },
+        checkField(field, fieldname, minlen) {
+            if (field.length < minlen) {
+                EventBus.$emit("show-alert", {
+                    title: "Something went wrong...",
+                    content: `The field "${fieldname}" must have more or equal ${minlen} characters!`
+                });
+                return false;
+            }
+            return true;
         }
     }
 };

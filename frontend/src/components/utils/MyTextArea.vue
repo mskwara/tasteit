@@ -1,7 +1,9 @@
 <template>
-    <div id="my-input" :style="getWidth()">
+    <div id="my-text-area" :style="getWidth()">
         <div class="content">
-            <input
+            <textarea
+                :rows="rows"
+                :cols="cols"
                 :type="type"
                 :placeholder="field"
                 :value="value"
@@ -30,7 +32,9 @@ export default {
         inputstyle: String,
         maxlen: Number,
         hint: String,
-        reference: String
+        reference: String,
+        rows: Number,
+        cols: Number
     },
     methods: {
         getWidth() {
@@ -43,7 +47,7 @@ export default {
 <style scoped lang="scss">
 @import "../../styles/styles.scss";
 
-#my-input {
+#my-text-area {
     width: auto;
     display: flex;
     flex-direction: column;
@@ -53,20 +57,21 @@ export default {
     .content {
         // max-width: 400px;
         width: 100%;
-        input {
-            border: 0;
-            background: none;
+        textarea {
+            border: 1px solid $border-300;
+            border-radius: 2px;
+            font-family: Calibri;
+            background: white;
             width: 100%;
             min-height: 40px;
             font-size: 13pt;
             padding-bottom: 0;
             color: $text-color;
 
-            &:focus + .underline-interactive {
-                border-bottom: 1px solid $primary-100;
-                width: 100%;
-                transition: 0.5s;
+            &:focus {
+                border: 1px solid $primary-100;
             }
+
             &:focus::-moz-placeholder {
                 color: $primary-100;
                 opacity: 1;
@@ -79,18 +84,6 @@ export default {
                 color: $primary-100;
                 opacity: 1;
             }
-        }
-
-        .underline {
-            width: 100%;
-            // max-width: 400px;
-            border-bottom: 1px solid $border-300;
-        }
-        .underline-interactive {
-            width: 0;
-            // max-width: 400px;
-            border-bottom: 1px solid $border-300;
-            transition: 0.5s;
         }
         .hint {
             font-size: 9pt;
