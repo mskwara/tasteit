@@ -19,6 +19,8 @@ export default {
     },
     methods: {
         switchSidebar() {
+            console.log("bla", this.sidebarOpened);
+
             if (!this.sidebarOpened) {
                 EventBus.$emit("open-sidebar");
                 this.sidebarOpened = true;
@@ -27,6 +29,11 @@ export default {
                 this.sidebarOpened = false;
             }
         }
+    },
+    mounted() {
+        EventBus.$on("close-sidebar", () => {
+            this.sidebarOpened = false;
+        });
     }
 };
 </script>

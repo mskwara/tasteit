@@ -1,9 +1,11 @@
+const multer = require("multer");
+const sharp = require("sharp");
 const catchAsync = require("../utilities/catchAsync");
 const Recipe = require("../models/recipeModel");
 const AppError = require("../utilities/appError");
 
 exports.getAllRecipes = catchAsync(async (req, res, next) => {
-    const recipes = await Recipe.find();
+    const recipes = await Recipe.find().sort({ createdAt: -1 });
 
     res.status(200).json({
         status: "success",
@@ -15,7 +17,10 @@ exports.getAllRecipes = catchAsync(async (req, res, next) => {
 });
 
 exports.getRecipe = catchAsync(async (req, res, next) => {
-    const recipe = await Recipe.findById(req.params.id);
+    const recipe = await Recipe.findById(req.params.id).populate({
+        path: "reviews",
+        options: { sort: { createdAt: -1 } },
+    });
 
     if (!recipe)
         return next(new AppError("There is no recipe with that id!", 404));
@@ -46,6 +51,11 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
 });
 
 exports.createRecipe = catchAsync(async (req, res, next) => {
+    console.log(req.body);
+    req.body.ingredients = JSON.parse(req.body.ingredients);
+    req.body.steps = JSON.parse(req.body.steps);
+
+    if (req.body.createdAt) req.body.createdAt = null;
     const recipe = await Recipe.create(req.body);
 
     res.status(201).json({
@@ -66,4 +76,63 @@ exports.deleteRecipe = catchAsync(async (req, res, next) => {
         status: "success",
         data: null,
     });
+});
+
+// COVER IMAGE
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith("image")) {
+        cb(null, true);
+    } else {
+        cb(
+            new AppError("Not an image. Please upload only images!", 400),
+            false
+        );
+    }
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+});
+
+exports.uploadRecipeImages = upload.fields([
+    { name: "imageCover", maxCount: 1 },
+]);
+
+exports.resizeRecipeImages = catchAsync(async (req, res, next) => {
+    console.log(req.files.imageCover);
+    // console.log(req.body);
+
+    if (!req.files.imageCover) return next(); //  || !req.files.images
+    // 1) Cover image
+    req.body.imageCover = `recipe-${Date.now()}-cover.jpeg`;
+
+    await sharp(req.files.imageCover[0].buffer)
+        .resize(400, 250)
+        .toFormat("jpeg")
+        .jpeg({ quality: 100 })
+        .toFile(`public/img/recipes/${req.body.imageCover}`);
+
+    // 2) Images
+    // req.body.images = [];
+    // await Promise.all(
+    //     req.files.images.map(async (file, i) => {
+    //         const filename = `tour-${req.params.id}-${Date.now()}-${
+    //             i + 1
+    //         }.jpeg`;
+
+    //         await sharp(file.buffer)
+    //             .resize(2000, 1333)
+    //             .toFormat("jpeg")
+    //             .jpeg({ quality: 90 })
+    //             .toFile(`public/img/tours/${filename}`);
+
+    //         req.body.images.push(filename);
+    //     })
+    // );
+
+    next();
 });

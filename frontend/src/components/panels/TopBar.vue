@@ -1,5 +1,5 @@
 <template>
-    <div id="topbar">
+    <div id="topbar" :class="sidebarStatus">
         <hamburger class="hamburger" />
         <logo class="logo" />
         <my-button :text="btnText" type="empty" :click="login_logout" />
@@ -20,7 +20,8 @@ export default {
     components: { MyButton, Logo, Hamburger },
     data() {
         return {
-            btnText: "Login"
+            btnText: "Login",
+            sidebarStatus: "sidebar-closed"
         };
     },
     mounted() {
@@ -30,6 +31,14 @@ export default {
             } else {
                 this.btnText = "Login";
             }
+        });
+
+        EventBus.$on("open-sidebar", () => {
+            this.sidebarStatus = "sidebar-opened";
+        });
+
+        EventBus.$on("close-sidebar", () => {
+            this.sidebarStatus = "sidebar-closed";
         });
     },
     methods: {
@@ -42,6 +51,9 @@ export default {
                 await axios.post("/users/logout");
                 this.clearUserData(UserData);
                 EventBus.$emit("update-user-data");
+                EventBus.$emit("show-pop-alert", {
+                    content: `You have been logged out!`
+                });
             }
         }
     }
@@ -61,7 +73,19 @@ export default {
     align-items: center;
     position: fixed;
     top: 0;
+    margin-left: 0;
+    z-index: 2;
 
+    &.sidebar-opened {
+        width: 75%;
+        margin-left: 0;
+        transition: 1s;
+    }
+    &.sidebar-closed {
+        width: 100%;
+        margin-left: 0;
+        transition: 1s;
+    }
     .hamburger {
         margin-left: 30px;
     }

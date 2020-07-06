@@ -13,6 +13,7 @@
             @blur="active = false"
             :reference="reference"
             ref="editabletext"
+            :selectOnClick="selectOnClick"
             v-else
         />
     </div>
@@ -29,7 +30,11 @@ export default {
         textstyle: String,
         inputstyle: String,
         maxlen: Number,
-        reference: String
+        reference: String,
+        selectOnClick: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
@@ -42,6 +47,9 @@ export default {
             this.active = true;
             this.$nextTick(() => {
                 this.$refs.editabletext.$refs[this.reference].focus();
+                if (this.selectOnClick) {
+                    this.$refs.editabletext.$refs[this.reference].select();
+                }
             });
         }
     }

@@ -14,7 +14,7 @@
                 />
                 <div class="link">My recipes</div>
                 <div class="link">Favourites</div>
-                <div class="link">My profile</div>
+                <div class="link" @click="setRouteWrap('profile', {})">My profile</div>
                 <div class="link" @click="logout()">Logout</div>
             </div>
             <div class="menu" style="margin-top: 20px" v-else>
@@ -136,6 +136,7 @@ export default {
             color: white;
             font-size: 18pt;
             margin: 0 20px;
+            min-width: 400px;
         }
     }
 

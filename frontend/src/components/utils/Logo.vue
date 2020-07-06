@@ -33,8 +33,8 @@ export default {
     cursor: pointer;
 
     .square {
-        width: 20px;
-        height: 20px;
+        width: 15px;
+        height: 15px;
         transform: rotate(45deg);
         background-color: $primary-100;
         z-index: 2;

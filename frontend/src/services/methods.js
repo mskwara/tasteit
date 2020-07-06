@@ -29,3 +29,61 @@ exports.clearUserData = userdata => {
     userdata.surname = "";
     userdata.avatar = "";
 };
+
+exports.validateIngredients = recipe => {
+    let result = {
+        status: "success",
+        error: null
+    };
+    if (recipe.name.length == 0 || recipe.name === "Untitled") {
+        result.status = "fail";
+        result.error = {
+            title: "Recipe is untitled...",
+            content: "Please provide recipe's title by clicking it."
+        };
+    } else if (recipe.ingredients.length == 0) {
+        result.status = "fail";
+        result.error = {
+            title: "Empty ingredients list",
+            content: "Please add necessary ingredients."
+        };
+    } else if (recipe.portion === "") {
+        result.status = "fail";
+        result.error = {
+            title: "Unspecified number of servings",
+            content: "Please set amount of portions."
+        };
+    }
+    return result;
+};
+
+exports.validateInfo = recipe => {
+    let result = {
+        status: "success",
+        error: null
+    };
+    if (recipe.shortDescription.length == 0) {
+        result.status = "fail";
+        result.error = {
+            title: "The description is empty",
+            content: "Please provide recipe's description."
+        };
+    } else if (
+        recipe.preparationTime === null ||
+        recipe.preparationTime.length == 0 ||
+        /^\d+$/.test(recipe.preparationTime) === false
+    ) {
+        result.status = "fail";
+        result.error = {
+            title: "Invalid preparation time",
+            content: "Please specify preparation time as number of minutes."
+        };
+    } else if (recipe.difficulty === "" || recipe.difficulty === "none") {
+        result.status = "fail";
+        result.error = {
+            title: "Unspecified recipe's difficulty",
+            content: "Please select recipe's difficulty."
+        };
+    }
+    return result;
+};

@@ -2,6 +2,7 @@
     <div>
         <spinner v-if="loading" />
         <div id="recipes">
+            <p v-if="recipes.length == 0">There is no recipe yet!</p>
             <recipe-tile :key="recipe._id" v-for="recipe in recipes" :recipe="recipe" />
         </div>
     </div>
@@ -30,6 +31,7 @@ export default {
             // console.log(response);
             this.recipes = response.data.data.recipes;
             this.loading = false;
+            console.log(this.recipes);
         } catch (error) {
             console.error(error);
         }

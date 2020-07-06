@@ -6,6 +6,7 @@
                 <top-bar />
                 <router-view></router-view>
                 <alert />
+                <pop-alert />
             </div>
         </div>
     </div>
@@ -13,6 +14,7 @@
 
 <script>
 import Alert from "./components/utils/Alert";
+import PopAlert from "./components/utils/PopAlert";
 import TopBar from "./components/panels/TopBar";
 import Sidebar from "./components/panels/Sidebar";
 import EventBus from "./services/event-bus.js";
@@ -21,7 +23,7 @@ const axios = require("axios");
 
 export default {
     name: "App",
-    components: { Alert, TopBar, Sidebar },
+    components: { Alert, TopBar, Sidebar, PopAlert },
     data() {
         return {
             sidebarStatus: "sidebar-closed",
@@ -74,5 +76,9 @@ export default {
 body {
     background-color: rgba(236, 236, 236, 0.452);
     margin: 0;
+
+    &.no-scroll {
+        overflow: hidden;
+    }
 }
 </style>

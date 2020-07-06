@@ -52,6 +52,9 @@ export default {
                 UserData.surname = user.surname;
                 UserData.avatar = user.avatar;
                 EventBus.$emit("update-user-data");
+                EventBus.$emit("show-pop-alert", {
+                    content: `Nice to see you again, ${user.name}!`
+                });
                 this.setRoute("recipes", {});
             } catch (error) {
                 if (error.response.status === 401) {

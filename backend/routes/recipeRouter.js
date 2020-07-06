@@ -7,7 +7,11 @@ const router = express.Router();
 router
     .route("/")
     .get(recipeController.getAllRecipes)
-    .post(recipeController.createRecipe);
+    .post(
+        recipeController.uploadRecipeImages,
+        recipeController.resizeRecipeImages,
+        recipeController.createRecipe
+    );
 
 router
     .route("/:id")

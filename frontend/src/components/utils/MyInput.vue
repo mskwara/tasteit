@@ -2,6 +2,7 @@
     <div id="my-input" :style="getWidth()">
         <div class="content">
             <input
+                :class="type"
                 :type="type"
                 :placeholder="field"
                 :value="value"
@@ -50,6 +51,7 @@ export default {
     justify-content: center;
     align-items: center;
     // border: 1px solid red;
+
     .content {
         // max-width: 400px;
         width: 100%;

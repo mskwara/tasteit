@@ -1,12 +1,13 @@
 <template>
     <div id="stepper">
         <div class="title">
-            <p style="font-size: 25pt">PRZEPIS</p>
+            <p style="font-size: 25pt">RECIPE</p>
             <divider />
         </div>
         <!-- DURING THE INSTRUCTIONS -->
         <div class="content" v-if="step < steps.length">
             <div class="top" v-if="started()">
+                <div class="header" v-if="steps[step].optional == true">Optional step</div>
                 <step
                     class="step"
                     :content="steps[step].before"
@@ -25,7 +26,15 @@
         </div>
         <!-- SENDING A REVIEW -->
         <div class="content" v-else>
-            <div class="top">Review</div>
+            <div class="top">
+                <my-text-area
+                    :rows="5"
+                    :cols="100"
+                    :maxlen="600"
+                    field="Write a short review..."
+                    v-model="review.content"
+                />
+            </div>
             <div class="bottom">
                 <my-button text="Send a review" :click="sendReview" class="button" v-if="active" />
                 <my-button text="Send a review" class="button" v-else />
@@ -39,21 +48,31 @@ import Divider from "../utils/Divider";
 import MyButton from "../utils/MyButton";
 import Step from "../utils/Step";
 import Counter from "../utils/Counter";
+import MyTextArea from "../utils/MyTextArea";
 import EventBus from "../../services/event-bus.js";
+import UserData from "../../services/user-data.js";
+const axios = require("axios");
 
 export default {
     name: "Stepper",
-    components: { Divider, MyButton, Step, Counter },
+    components: { Divider, MyButton, Step, Counter, MyTextArea },
     props: {
         steps: Array,
         active: {
             type: Boolean,
             default: true
-        }
+        },
+        recipeID: String
     },
     data() {
         return {
-            step: -1
+            step: -1,
+            review: {
+                user: "",
+                recipe: "",
+                content: "",
+                rating: null
+            }
         };
     },
     methods: {
@@ -78,14 +97,26 @@ export default {
         makeStepHeader() {
             return `Step ${this.step + 1}`;
         },
-        sendReview() {
-            console.log("Not yet implemented!");
+        async sendReview() {
+            this.review.user = UserData.id;
+            this.review.recipe = this.recipeID;
+            await axios.post("reviews", this.review);
+            EventBus.$emit("show-alert", {
+                title: "Excellent!",
+                content: "Your review has been posted below this recipe!"
+            });
+            this.review.user = "";
+            this.review.recipe = "";
+            this.review.content = "";
+            this.review.rating = null;
+            this.$emit("update-reviews");
         }
     }
 };
 </script>
 
 <style scoped lang="scss">
+@import "../../styles/styles.scss";
 #stepper {
     flex: 1;
     height: auto;
@@ -125,6 +156,18 @@ export default {
 
             .step {
                 margin-bottom: 50px;
+            }
+
+            .header {
+                width: 200px;
+                height: 30px;
+                border: 1px solid rgb(201, 201, 201);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: $primary-300;
+                color: white;
+                margin-bottom: 30px;
             }
         }
 
