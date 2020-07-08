@@ -1,14 +1,20 @@
 <template>
     <div id="recipeTile">
         <div
-            class="box"
-            @click="
-                        setRoute(`recipe`, { id: recipe._id })
-                    "
+            v-if="showFavourite"
+            :class="isFavourite ? 'favourite my-favourite' : 'favourite'"
+            @click="addToFavourites()"
         >
+            <img src="../../assets/heart.svg" />
+        </div>
+        <div class="box" @click="setRoute(`recipe`, { id: recipe._id })">
             <div class="image-box">
                 <div
-                    v-if="recipe.imageCover != null && recipe.imageCover != '' && recipe.imageCover != 'undefined'"
+                    v-if="
+                        recipe.imageCover != null &&
+                            recipe.imageCover != '' &&
+                            recipe.imageCover != 'undefined'
+                    "
                 >
                     <img class="cover" :src="getImageCover()" />
                 </div>
@@ -31,7 +37,18 @@
             </div>
 
             <div class="loader" />
-            <div class="title">{{recipe.name}}</div>
+            <div class="title">{{ recipe.name }}</div>
+            <div class="rating">
+                <star-rating
+                    v-model="recipe.avgRating"
+                    :show-rating="false"
+                    :increment="0.01"
+                    :read-only="true"
+                    :star-size="18"
+                    active-color="#fc9d03"
+                ></star-rating>
+                <p>({{ recipe.ratingsQuantity }})</p>
+            </div>
             <div class="description">
                 <p>{{ recipe.shortDescription }}</p>
             </div>
@@ -39,11 +56,11 @@
                 <img class="avatar" :src="getAvatarPath()" />
                 <p v-if="active">
                     by
-                    <b>{{recipe.user.name}} {{recipe.user.surname}}</b>
+                    <b>{{ recipe.user.name }} {{ recipe.user.surname }}</b>
                 </p>
                 <p v-else>
                     by
-                    <b>{{UserData.name}} {{UserData.surname}}</b>
+                    <b>{{ UserData.name }} {{ UserData.surname }}</b>
                 </p>
             </div>
             <div class="button-section">
@@ -65,10 +82,13 @@
 import MyButton from "../utils/MyButton";
 import { setRoute } from "../../services/methods";
 import UserData from "../../services/user-data.js";
+import StarRating from "vue-star-rating";
+import EventBus from "../../services/event-bus.js";
+const axios = require("axios");
 
 export default {
     name: "App",
-    components: { MyButton },
+    components: { MyButton, StarRating },
     props: {
         recipe: Object,
         active: {
@@ -78,15 +98,25 @@ export default {
         photo: {
             type: String,
             default: null
-        }
+        },
+        showFavourite: Boolean
     },
     data() {
         return {
             coverImageSrc: "",
-            UserData
+            UserData,
+            isFavourite: false,
+            isLoggedIn: false
         };
     },
-    mounted() {},
+    mounted() {
+        if (
+            UserData.id != null &&
+            UserData.favourites.includes(this.recipe._id)
+        ) {
+            this.isFavourite = true;
+        }
+    },
     methods: {
         setRoute,
         getImageCover() {
@@ -107,12 +137,39 @@ export default {
         getAvatarPath() {
             try {
                 if (this.active) {
-                    return require("../../assets/" + this.recipe.user.avatar);
+                    return require("../../../../backend/public/img/users/" +
+                        this.recipe.user.avatar);
                 } else {
-                    return require("../../assets/" + this.recipe.user.avatar);
+                    return require("../../../../backend/public/img/users/" +
+                        this.recipe.user.avatar);
                 }
             } catch (err) {
-                return require("../../assets/default.jpg");
+                return require("../../../../backend/public/img/users/default.jpg");
+            }
+        },
+        async addToFavourites() {
+            if (!this.UserData.favourites.includes(this.recipe._id)) {
+                // dodanie do ulubionych
+                const response = await axios.post(
+                    `users/${this.UserData.id}/favourites/${this.recipe._id}`
+                );
+                this.UserData.favourites =
+                    response.data.data.updatedUser.favourites;
+                this.isFavourite = true;
+                EventBus.$emit("show-pop-alert", {
+                    content: `${this.recipe.name} has been added to your favourites!`
+                });
+            } else {
+                // wykasowanie z ulubionych
+                const response = await axios.delete(
+                    `users/${this.UserData.id}/favourites/${this.recipe._id}`
+                );
+                this.UserData.favourites =
+                    response.data.data.updatedUser.favourites;
+                this.isFavourite = false;
+                EventBus.$emit("show-pop-alert", {
+                    content: `${this.recipe.name} has been removed from your favourites!`
+                });
             }
         }
     }
@@ -122,10 +179,33 @@ export default {
 <style scoped lang="scss">
 @import "../../styles/styles.scss";
 #recipeTile {
+    position: relative;
+
+    .favourite {
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        right: 50px;
+        top: 50px;
+        opacity: 0.3;
+        z-index: 2;
+        cursor: pointer;
+        transition: opacity 0.5s;
+
+        &:hover {
+            opacity: 1;
+            transition: opacity 0.5s;
+        }
+    }
+
+    .my-favourite {
+        opacity: 1;
+    }
+
     .box {
         background-color: white;
         width: 400px;
-        height: 420px;
+        height: 440px;
         margin: 40px;
         display: flex;
         flex-direction: column;
@@ -141,11 +221,15 @@ export default {
     }
 
     .image-box {
-        display: block;
+        // display: block;
         height: 250px;
+        position: relative;
     }
+
     .loader {
         height: 5px;
+        margin-top: -1px;
+        z-index: 2;
         width: 0;
         background-color: $primary-300;
         align-self: flex-start;
@@ -178,6 +262,19 @@ export default {
         margin-left: 20px;
         font-size: 14pt;
         text-align: left;
+    }
+    .rating {
+        align-self: baseline;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+
+        p {
+            margin: 0;
+            font-size: 10pt;
+            margin-bottom: 2px;
+            margin-left: 5px;
+        }
     }
     .icons-section {
         position: relative;
@@ -237,6 +334,7 @@ export default {
 
         .avatar {
             width: 25px;
+            border-radius: 25px;
             margin-right: 10px;
         }
         p {

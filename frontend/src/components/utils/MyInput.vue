@@ -63,6 +63,7 @@ export default {
             font-size: 13pt;
             padding-bottom: 0;
             color: $text-color;
+            outline: none;
 
             &:focus + .underline-interactive {
                 border-bottom: 1px solid $primary-100;

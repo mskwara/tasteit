@@ -5,7 +5,8 @@ export default {
             name: "",
             surname: "",
             email: "",
-            avatar: ""
+            avatar: "",
+            favourites: []
         };
     }
 };

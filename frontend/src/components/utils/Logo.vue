@@ -1,5 +1,5 @@
 <template>
-    <div id="logo" @click="setRoute('recipes', {})">
+    <div id="logo" @click="goToRecipes()">
         <div class="square" />
         <p>Taste it!</p>
     </div>
@@ -7,12 +7,20 @@
 
 <script>
 import { setRoute } from "../../services/methods";
+import EventBus from "../../services/event-bus.js";
 
 export default {
     name: "Logo",
     components: {},
     methods: {
-        setRoute
+        setRoute,
+        goToRecipes() {
+            if (this.$route.name != "recipes") {
+                this.setRoute("recipes", {});
+            } else {
+                EventBus.$emit("filter-recipes", {});
+            }
+        }
     }
 };
 </script>

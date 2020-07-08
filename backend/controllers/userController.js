@@ -1,6 +1,8 @@
 const catchAsync = require("../utilities/catchAsync");
 const User = require("../models/userModel");
 const AppError = require("../utilities/appError");
+const multer = require("multer");
+const sharp = require("sharp");
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find();
@@ -14,25 +16,101 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     });
 });
 
+exports.addToFavourites = catchAsync(async (req, res, next) => {
+    const updatedUser = await User.findByIdAndUpdate(
+        req.params.userId,
+        {
+            $push: { favourites: req.params.recipeId },
+        },
+        { new: true }
+    );
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            updatedUser,
+        },
+    });
+});
+
+exports.deleteFromFavourites = catchAsync(async (req, res, next) => {
+    const updatedUser = await User.findByIdAndUpdate(
+        req.params.userId,
+        {
+            $pull: { favourites: req.params.recipeId },
+        },
+        { new: true }
+    );
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            updatedUser,
+        },
+    });
+});
+
+// COVER IMAGE
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith("image")) {
+        cb(null, true);
+    } else {
+        cb(
+            new AppError("Not an image. Please upload only images!", 400),
+            false
+        );
+    }
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+});
+
+exports.uploadUserImage = upload.fields([{ name: "avatar", maxCount: 1 }]);
+
+exports.resizeUserImage = catchAsync(async (req, res, next) => {
+    console.log(req.files.avatar);
+    // console.log(req.body);
+
+    if (!req.files.avatar) return next(); //  || !req.files.images
+    // 1) Cover image
+    req.body.avatar = `user-${Date.now()}-avatar.jpeg`;
+
+    await sharp(req.files.avatar[0].buffer)
+        .resize(300, 300)
+        .toFormat("jpeg")
+        .jpeg({ quality: 100 })
+        .toFile(`public/img/users/${req.body.avatar}`);
+
+    next();
+});
+
+exports.updateUser = catchAsync(async (req, res, next) => {
+    if (req.body.password || req.body.passwordConfirm) {
+        return next(
+            new AppError("This route is not for password updates.", 400)
+        );
+    }
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+    });
+
+    if (!user) return next(new AppError("There is no user with that id!", 404));
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            user,
+        },
+    });
+});
 // exports.getRecipe = catchAsync(async (req, res, next) => {
 //     const recipe = await Recipe.findById(req.params.id);
-
-//     if (!recipe)
-//         return next(new AppError("There is no recipe with that id!", 404));
-
-//     res.status(200).json({
-//         status: "success",
-//         data: {
-//             recipe,
-//         },
-//     });
-// });
-
-// exports.updateRecipe = catchAsync(async (req, res, next) => {
-//     const recipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, {
-//         new: true,
-//         runValidators: true,
-//     });
 
 //     if (!recipe)
 //         return next(new AppError("There is no recipe with that id!", 404));

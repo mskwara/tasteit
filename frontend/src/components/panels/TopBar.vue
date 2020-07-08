@@ -44,12 +44,20 @@ export default {
     methods: {
         setRoute,
         clearUserData,
+        filterRecipes(filter) {
+            if (this.$route.name != "recipes") {
+                this.setRoute("recipes", filter);
+            } else {
+                EventBus.$emit("filter-recipes", filter);
+            }
+        },
         async login_logout() {
             if (this.btnText === "Login") {
                 this.setRoute("login", {});
             } else {
                 await axios.post("/users/logout");
                 this.clearUserData(UserData);
+                this.filterRecipes({});
                 EventBus.$emit("update-user-data");
                 EventBus.$emit("show-pop-alert", {
                     content: `You have been logged out!`

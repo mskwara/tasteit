@@ -77,7 +77,11 @@ export default {
             try {
                 let formData = new FormData();
                 formData.append("imageCover", this.photo);
-                formData.append("name", this.recipe.name);
+                formData.append(
+                    "name",
+                    this.recipe.name.charAt(0).toUpperCase() +
+                        this.recipe.name.slice(1)
+                );
                 formData.append("preparationTime", this.recipe.preparationTime);
                 formData.append("difficulty", this.recipe.difficulty);
                 formData.append("portion", this.recipe.portion);

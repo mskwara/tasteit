@@ -3,7 +3,7 @@
         <div class="content" v-if="status=='opened'">
             <div class="user-info" v-if="user.id != null">
                 <img class="avatar" :src="getAvatarPath()" />
-                <p>{{user.name}} {{user.surname}}</p>
+                <p>{{UserData.name}} {{UserData.surname}}</p>
             </div>
             <div class="menu" v-if="user.id != null">
                 <my-button
@@ -12,8 +12,15 @@
                     type="full"
                     :click="setRouteWrap.bind(null, 'recipecreator', {})"
                 />
-                <div class="link">My recipes</div>
-                <div class="link">Favourites</div>
+                <div class="link" @click="filterRecipes({})">Home</div>
+                <div
+                    class="link"
+                    @click="filterRecipes({type: 'byUser', userId: UserData.id})"
+                >My recipes</div>
+                <div
+                    class="link"
+                    @click="filterRecipes({type: 'byFavourites', userId: UserData.id})"
+                >Favourites</div>
                 <div class="link" @click="setRouteWrap('profile', {})">My profile</div>
                 <div class="link" @click="logout()">Logout</div>
             </div>
@@ -38,7 +45,7 @@
 import EventBus from "../../services/event-bus.js";
 import UserData from "../../services/user-data.js";
 import MyButton from "../utils/MyButton";
-import { setRoute, clearUserData } from "../../services/methods";
+import { setRoute, replaceRoute, clearUserData } from "../../services/methods";
 const axios = require("axios");
 
 export default {
@@ -53,25 +60,40 @@ export default {
                 name: "",
                 surname: "",
                 avatar: ""
-            }
+            },
+            UserData
         };
     },
     methods: {
         clearUserData,
         setRoute,
+        replaceRoute,
         setRouteWrap(link, params) {
             this.setRoute(link, params);
             EventBus.$emit("close-sidebar");
         },
+        replaceRouteWrap(link, params) {
+            this.replaceRoute(link, params);
+            EventBus.$emit("close-sidebar");
+        },
         getAvatarPath() {
-            if (this.user.id != null) {
-                return require("../../assets/" + this.user.avatar);
+            if (UserData.id != null) {
+                return require("../../../../backend/public/img/users/" +
+                    UserData.avatar);
             }
         },
         async logout() {
             await axios.post("/users/logout");
             this.clearUserData(UserData);
             EventBus.$emit("update-user-data");
+            EventBus.$emit("close-sidebar");
+        },
+        filterRecipes(filter) {
+            if (this.$route.name != "recipes") {
+                this.setRoute("recipes", filter);
+            } else {
+                EventBus.$emit("filter-recipes", filter);
+            }
             EventBus.$emit("close-sidebar");
         }
     },
@@ -158,6 +180,7 @@ export default {
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            text-decoration: none;
             // text-transform: uppercase;
 
             transition: 0.5s;

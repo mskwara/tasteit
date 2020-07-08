@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Recipe = require("./recipeModel");
 
 const reviewSchema = new mongoose.Schema({
     user: {
@@ -38,6 +39,39 @@ reviewSchema.pre(/^find/, function (next) {
         select: "name surname avatar",
     });
     next();
+});
+
+reviewSchema.statics.calcAverageRatings = async function (recipeId) {
+    const stats = await this.aggregate([
+        {
+            $match: { recipe: recipeId },
+        },
+        {
+            $group: {
+                _id: "$recipe",
+                nRating: { $sum: 1 },
+                avgRating: { $avg: "$rating" },
+            },
+        },
+    ]);
+    // console.log(stats);
+
+    if (stats.length > 0) {
+        await Recipe.findByIdAndUpdate(recipeId, {
+            ratingsQuantity: stats[0].nRating,
+            avgRating: stats[0].avgRating,
+        });
+    } else {
+        await Recipe.findByIdAndUpdate(recipeId, {
+            ratingsQuantity: 0,
+            ratingsAverage: 0,
+        });
+    }
+};
+
+reviewSchema.post("save", function () {
+    // this points to current review
+    this.constructor.calcAverageRatings(this.recipe);
 });
 
 const Review = mongoose.model("Review", reviewSchema);

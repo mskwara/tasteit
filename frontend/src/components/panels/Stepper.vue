@@ -21,12 +21,24 @@
                 <my-button text="Start" :click="start" class="button" v-if="!started()" />
 
                 <my-button text="Previous" class="button" :click="back" v-if="started()" />
-                <my-button text="Next" :click="next" class="button" v-if="started()" />
+                <my-button
+                    :text="step < steps.length-1 ? 'Next' : 'Finish'"
+                    :click="next"
+                    class="button"
+                    v-if="started()"
+                />
             </div>
         </div>
         <!-- SENDING A REVIEW -->
         <div class="content" v-else>
             <div class="top">
+                <star-rating
+                    class="rating"
+                    v-model="review.rating"
+                    :show-rating="false"
+                    :star-size="30"
+                    active-color="#fc9d03"
+                ></star-rating>
                 <my-text-area
                     :rows="5"
                     :cols="100"
@@ -36,8 +48,14 @@
                 />
             </div>
             <div class="bottom">
-                <my-button text="Send a review" :click="sendReview" class="button" v-if="active" />
-                <my-button text="Send a review" class="button" v-else />
+                <my-button
+                    text="Send a review"
+                    :click="sendReview"
+                    class="button"
+                    v-if="active"
+                    :disabled="review.content == '' || review.rating == null"
+                />
+                <my-button text="Send a review" class="button" :disabled="true" v-else />
             </div>
         </div>
     </div>
@@ -51,13 +69,17 @@ import Counter from "../utils/Counter";
 import MyTextArea from "../utils/MyTextArea";
 import EventBus from "../../services/event-bus.js";
 import UserData from "../../services/user-data.js";
+import StarRating from "vue-star-rating";
 const axios = require("axios");
 
 export default {
     name: "Stepper",
-    components: { Divider, MyButton, Step, Counter, MyTextArea },
+    components: { Divider, MyButton, Step, Counter, MyTextArea, StarRating },
     props: {
-        steps: Array,
+        steps: {
+            type: Array,
+            default: () => []
+        },
         active: {
             type: Boolean,
             default: true
@@ -168,6 +190,12 @@ export default {
                 background-color: $primary-300;
                 color: white;
                 margin-bottom: 30px;
+            }
+
+            .rating {
+                align-self: baseline;
+                margin-left: 10px;
+                margin-bottom: 10px;
             }
         }
 

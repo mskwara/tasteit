@@ -4,6 +4,10 @@ exports.setRoute = function(link, params) {
     }
 };
 
+exports.replaceRoute = function(link, params) {
+    this.$router.replace({ name: link, params: params });
+};
+
 exports.formatSecToTime = sec => {
     let result = "";
     if (sec == 0) {
@@ -28,6 +32,7 @@ exports.clearUserData = userdata => {
     userdata.name = "";
     userdata.surname = "";
     userdata.avatar = "";
+    userdata.favourites = [];
 };
 
 exports.validateIngredients = recipe => {

@@ -53,6 +53,16 @@ const recipeSchema = new mongoose.Schema(
             type: Date,
             default: Date.now(),
         },
+        avgRating: {
+            type: Number,
+            min: 1,
+            max: 5,
+            set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
+        },
+        ratingsQuantity: {
+            type: Number,
+            default: 0,
+        },
         user: {
             type: mongoose.Schema.ObjectId,
             ref: "User",

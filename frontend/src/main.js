@@ -14,7 +14,7 @@ Vue.config.productionTip = false;
 
 const router = new VueRouter({
     routes: [
-        { path: "/", component: Recipes, name: "recipes" },
+        { path: "/", component: Recipes, name: "recipes", params: true },
         {
             path: "/recipe/creator",
             component: RecipeCreator,

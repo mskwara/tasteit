@@ -50,7 +50,9 @@ export default {
                 UserData.id = user._id;
                 UserData.name = user.name;
                 UserData.surname = user.surname;
+                UserData.email = user.email;
                 UserData.avatar = user.avatar;
+                UserData.favourites = user.favourites;
                 EventBus.$emit("update-user-data");
                 EventBus.$emit("show-pop-alert", {
                     content: `Nice to see you again, ${user.name}!`

@@ -4,7 +4,7 @@
             <sidebar />
             <div :class="sidebarStatus">
                 <top-bar />
-                <router-view></router-view>
+                <router-view :key="$route.fullPath" />
                 <alert />
                 <pop-alert />
             </div>
@@ -30,6 +30,7 @@ export default {
             UserData
         };
     },
+
     async mounted() {
         const response = await axios.get("/users/isloggedin");
 
@@ -39,6 +40,10 @@ export default {
             UserData.name = user.name;
             UserData.surname = user.surname;
             UserData.avatar = user.avatar;
+            UserData.favourites = user.favourites;
+            EventBus.$emit("show-pop-alert", {
+                content: `Nice to see you again, ${user.name}!`
+            });
         } else {
             UserData.id = null;
         }

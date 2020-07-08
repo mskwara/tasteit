@@ -3,24 +3,37 @@
         <div class="left">
             <div class="user-info">
                 <img class="avatar" :src="getAvatarPath()" />
-                <p>{{review.user.name}} {{review.user.surname}}</p>
+                <p>{{ review.user.name }} {{ review.user.surname }}</p>
             </div>
         </div>
         <div class="right">
-            <div class="date">{{getDate(review.createdAt)}}</div>
-            <div class="content">{{review.content}}</div>
+            <div class="top">
+                <star-rating
+                    class="rating"
+                    v-model="review.rating"
+                    :show-rating="false"
+                    :read-only="true"
+                    :star-size="20"
+                    active-color="#fc9d03"
+                ></star-rating>
+                <div class="date">{{ getDate(review.createdAt) }}</div>
+            </div>
+            <div class="content">{{ review.content }}</div>
         </div>
     </div>
 </template>
 
 <script>
+import StarRating from "vue-star-rating";
+
 export default {
     name: "Review",
-    components: {},
+    components: { StarRating },
     props: { review: Object },
     methods: {
         getAvatarPath() {
-            return require("../../assets/" + this.review.user.avatar);
+            return require("../../../../backend/public/img/users/" +
+                this.review.user.avatar);
         },
         getDate(date) {
             return date.slice(0, 10) + ", " + date.slice(11, 16);
@@ -60,7 +73,7 @@ export default {
             .avatar {
                 width: 70px;
                 height: 70px;
-                border-radius: 35px;
+                border-radius: 70px;
                 border: 2px solid white;
             }
             p {
@@ -74,8 +87,10 @@ export default {
         width: 70%;
         padding: 10px;
 
-        .date {
-            text-align: right;
+        .top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
         }
         .content {
             font-size: 14pt;

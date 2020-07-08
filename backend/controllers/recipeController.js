@@ -2,10 +2,44 @@ const multer = require("multer");
 const sharp = require("sharp");
 const catchAsync = require("../utilities/catchAsync");
 const Recipe = require("../models/recipeModel");
+const User = require("../models/userModel");
 const AppError = require("../utilities/appError");
 
 exports.getAllRecipes = catchAsync(async (req, res, next) => {
     const recipes = await Recipe.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+        status: "success",
+        results: recipes.length,
+        data: {
+            recipes,
+        },
+    });
+});
+
+exports.getUserRecipes = catchAsync(async (req, res, next) => {
+    const recipes = await Recipe.find({ user: req.params.userId }).sort({
+        createdAt: -1,
+    });
+    const user = await User.findById(req.params.userId).select("name surname");
+
+    res.status(200).json({
+        status: "success",
+        results: recipes.length,
+        user,
+        data: {
+            recipes,
+        },
+    });
+});
+
+exports.getFavouriteRecipes = catchAsync(async (req, res, next) => {
+    const user = await User.findById(req.params.userId);
+    const recipes = await Recipe.find({
+        _id: { $in: user.favourites },
+    }).sort({
+        createdAt: -1,
+    });
 
     res.status(200).json({
         status: "success",

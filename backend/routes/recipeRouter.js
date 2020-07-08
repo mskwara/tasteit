@@ -13,6 +13,11 @@ router
         recipeController.createRecipe
     );
 
+router.route("/user/:userId").get(recipeController.getUserRecipes);
+router
+    .route("/favourites/user/:userId")
+    .get(recipeController.getFavouriteRecipes);
+
 router
     .route("/:id")
     .get(recipeController.getRecipe)
