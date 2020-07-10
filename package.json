@@ -6,9 +6,9 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "concurrently \"npm run serve\" \"npm run startServer\"",
-        "serve": "cd frontend && npm run serve",
+        "serve": "cd frontend && vue-cli-service serve",
         "startServer": "cd backend && node server.js",
-        "build": "cd frontend && npm run build",
+        "build": "cd frontend && vue-cli-service build",
         "heroku-postinstall": "npm install && npm run build"
     },
     "dependencies": {
@@ -37,7 +37,7 @@
     "devDependencies": {
         "@vue/cli-plugin-babel": "~4.3.0",
         "@vue/cli-plugin-eslint": "~4.3.0",
-        "@vue/cli-service": "~4.1.0",
+        "@vue/cli-service": "^4.1.2",
         "babel-eslint": "^10.1.0",
         "eslint": "^6.7.2",
         "eslint-plugin-vue": "^6.2.2",
