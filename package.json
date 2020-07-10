@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "cd backend && node server.js",
+        "start": "concurrently \"cd frontend && npm run serve\" \"cd backend && node server.js\"",
         "serve": "cd frontend && vue-cli-service serve",
         "build": "cd frontend && vue-cli-service build"
     },
