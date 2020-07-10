@@ -1,4 +1,4 @@
-The TasteIt web application is created in Vue.js as front-end and Node.js as backend. The application has wide range of functionality:
+The TasteIt web application is created in Vue.js as front-end and Node.js (MongoDB) as backend. The application has wide range of functionality:
 <ul>
   <li>Create an account with avatar</li>
   <li>Login using JSON Web Token</li>
