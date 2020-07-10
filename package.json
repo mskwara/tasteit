@@ -6,7 +6,32 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "cd backend && node server.js",
-        "serve": "cd frontend && vue-cli-service serve"
+        "serve": "cd frontend && vue-cli-service serve",
+        "build": "cd frontend && vue-cli-service build"
+    },
+    "dependencies": {
+        "bcrypt": "^4.0.1",
+        "cookie-parser": "^1.4.5",
+        "cors": "^2.8.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^5.9.10",
+        "multer": "^1.4.2",
+        "sharp": "^0.25.3",
+        "validator": "^13.0.0",
+        "@fortawesome/fontawesome-free": "^5.13.0",
+        "axios": "^0.19.2",
+        "core-js": "^3.6.4",
+        "image-clipper": "^0.4.4",
+        "resize-img": "^2.0.0",
+        "vue": "^2.6.11",
+        "vue-resource": "^1.5.1",
+        "vue-router": "^3.1.6",
+        "vue-star-rating": "^1.6.1"
+    },
+    "engines": {
+        "node": ">=10.0.0"
     },
     "repository": {
         "type": "git",
