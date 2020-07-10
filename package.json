@@ -5,9 +5,11 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "concurrently \"cd frontend && npm run serve\" \"cd ../backend && node server.js\"",
+        "start": "concurrently \"npm run serve\" \"npm run startServer\"",
         "serve": "cd frontend && npm run serve",
-        "build": "cd frontend && npm run build"
+        "startServer": "cd backend && node server.js",
+        "build": "cd frontend && npm run build",
+        "heroku-postinstall": "npm install && npm run build"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.13.0",
