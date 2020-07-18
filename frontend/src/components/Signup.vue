@@ -128,7 +128,9 @@ export default {
                     formData.append("name", this.name);
                     formData.append("surname", this.surname);
                     formData.append("email", this.email);
-                    formData.append("avatar", this.avatar);
+                    if (this.avatar != null) {
+                        formData.append("avatar", this.avatar);
+                    }
                     formData.append("password", this.password);
                     formData.append("passwordConfirm", this.passwordConfirm);
 
