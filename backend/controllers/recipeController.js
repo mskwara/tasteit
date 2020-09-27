@@ -4,6 +4,10 @@ const catchAsync = require("../utilities/catchAsync");
 const Recipe = require("../models/recipeModel");
 const User = require("../models/userModel");
 const AppError = require("../utilities/appError");
+const aws = require("aws-sdk");
+
+aws.config.region = "eu-central-1";
+const s3 = new aws.S3({ apiVersion: "2006-03-01" });
 
 exports.getAllRecipes = catchAsync(async (req, res, next) => {
     const recipes = await Recipe.find().sort({ createdAt: -1 });
@@ -144,11 +148,19 @@ exports.resizeRecipeImages = catchAsync(async (req, res, next) => {
     // 1) Cover image
     req.body.imageCover = `recipe-${Date.now()}-cover.jpeg`;
 
-    await sharp(req.files.imageCover[0].buffer)
+    req.files.imageCover[0].buffer = await sharp(req.files.imageCover[0].buffer)
         .resize(400, 250)
         .toFormat("jpeg")
         .jpeg({ quality: 100 })
-        .toFile(`public/img/recipes/${req.body.imageCover}`);
+        .toBuffer();
+
+    const params = {
+        Bucket: process.env.S3_BUCKET,
+        Key: req.body.imageCover,
+        Body: req.files.imageCover[0].buffer,
+    };
+
+    await s3.upload(params).promise();
 
     // 2) Images
     // req.body.images = [];

@@ -2,7 +2,7 @@
     <div id="sidebar" :class="status">
         <div class="content" v-if="status == 'opened'">
             <div class="user-info" v-if="user.id != null">
-                <img class="avatar" :src="getAvatarPath()" />
+                <img class="avatar" :src="photo" />
                 <p>{{ UserData.name }} {{ UserData.surname }}</p>
             </div>
             <div class="menu" v-if="user.id != null">
@@ -26,7 +26,7 @@
                     @click="
                         filterRecipes({
                             type: 'byFavourites',
-                            userId: UserData.id,
+                            userId: UserData.id
                         })
                     "
                 >
@@ -60,7 +60,12 @@
 import EventBus from "../../services/event-bus.js";
 import UserData from "../../services/user-data.js";
 import MyButton from "../utils/MyButton";
-import { setRoute, replaceRoute, clearUserData } from "../../services/methods";
+import {
+    setRoute,
+    replaceRoute,
+    clearUserData,
+    getPhotoFromAWS
+} from "../../services/methods";
 const axios = require("axios");
 
 export default {
@@ -74,9 +79,10 @@ export default {
                 id: "",
                 name: "",
                 surname: "",
-                avatar: "",
+                avatar: ""
             },
             UserData,
+            photo: null
         };
     },
     methods: {
@@ -91,12 +97,6 @@ export default {
             this.replaceRoute(link, params);
             EventBus.$emit("close-sidebar");
         },
-        getAvatarPath() {
-            if (UserData.id != null) {
-                return require("../../../../backend/public/img/users/" +
-                    UserData.avatar);
-            }
-        },
         async logout() {
             await axios.post("api/v1/users/logout");
             this.clearUserData(UserData);
@@ -110,7 +110,19 @@ export default {
                 EventBus.$emit("filter-recipes", filter);
             }
             EventBus.$emit("close-sidebar");
-        },
+        }
+    },
+    async updated() {
+        if (UserData.avatar && UserData.avatar !== "default.jpg") {
+            // console.log(UserData.avatar);
+            try {
+                this.photo = await getPhotoFromAWS(UserData.avatar);
+            } catch (err) {
+                this.photo = require("../../../../backend/public/img/users/default.jpg");
+            }
+        } else {
+            this.photo = require("../../../../backend/public/img/users/default.jpg");
+        }
     },
     mounted() {
         const date = new Date();
@@ -141,7 +153,7 @@ export default {
         EventBus.$on("close-sidebar", () => {
             this.status = "closed";
         });
-    },
+    }
 };
 </script>
 

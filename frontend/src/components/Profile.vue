@@ -4,7 +4,7 @@
         <divider />
         <div class="content">
             <div class="avatar-changer">
-                <img class="avatar" :src="getAvatarPath()" />
+                <img class="avatar" :src="photo" />
                 <div class="buttons">
                     <my-file-input
                         width="100%"
@@ -51,6 +51,7 @@ import MyFileInput from "./utils/MyFileInput";
 const axios = require("axios");
 const Clipper = require("image-clipper");
 import EventBus from "../services/event-bus.js";
+import { getPhotoFromAWS } from "../services/methods";
 
 export default {
     name: "App",
@@ -63,30 +64,35 @@ export default {
                 name: UserData.name,
                 surname: UserData.surname,
                 email: UserData.email,
-                avatar: null,
-            },
+                avatar: null
+            }
         };
     },
-    methods: {
-        getAvatarPath() {
-            if (this.photo) {
-                return this.photo;
+    async mounted() {
+        if (UserData.avatar && UserData.avatar !== "default.jpg") {
+            // console.log(UserData.avatar);
+            try {
+                this.photo = await getPhotoFromAWS(UserData.avatar);
+            } catch (err) {
+                this.photo = require("../../../backend/public/img/users/default.jpg");
             }
-            return require("../../../backend/public/img/users/" +
-                UserData.avatar);
-        },
+        } else {
+            this.photo = require("../../../backend/public/img/users/default.jpg");
+        }
+    },
+    methods: {
         avatarChange(photo) {
             this.user.avatar = photo;
             var reader = new FileReader();
             let vm = this;
-            reader.onload = function (event) {
+            reader.onload = function(event) {
                 // vm.photo = event.target.result;
                 const i = new Image();
                 i.onload = () => {
                     console.log(i.width, i.height);
 
                     if (i.height >= i.width) {
-                        Clipper(event.target.result, function () {
+                        Clipper(event.target.result, function() {
                             this.resize(300)
                                 .crop(
                                     0,
@@ -96,12 +102,12 @@ export default {
                                     300,
                                     300
                                 )
-                                .toDataURL(function (dataUrl) {
+                                .toDataURL(function(dataUrl) {
                                     vm.photo = dataUrl;
                                 });
                         });
                     } else {
-                        Clipper(event.target.result, function () {
+                        Clipper(event.target.result, function() {
                             this.resize(null, 300)
                                 .crop(
                                     i.width > 300
@@ -111,7 +117,7 @@ export default {
                                     300,
                                     300
                                 )
-                                .toDataURL(function (dataUrl) {
+                                .toDataURL(function(dataUrl) {
                                     vm.photo = dataUrl;
                                 });
                         });
@@ -150,10 +156,10 @@ export default {
 
             EventBus.$emit("update-user-data");
             EventBus.$emit("show-pop-alert", {
-                content: `Your profile has been updated!`,
+                content: `Your profile has been updated!`
             });
-        },
-    },
+        }
+    }
 };
 </script>
 

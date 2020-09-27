@@ -2,7 +2,7 @@
     <div id="review">
         <div class="left">
             <div class="user-info">
-                <img class="avatar" :src="getAvatarPath()" />
+                <img class="avatar" :src="photo" />
                 <p>{{ review.user.name }} {{ review.user.surname }}</p>
             </div>
         </div>
@@ -25,16 +25,31 @@
 
 <script>
 import StarRating from "vue-star-rating";
+import { getPhotoFromAWS } from "../../services/methods";
 
 export default {
     name: "Review",
     components: { StarRating },
     props: { review: Object },
-    methods: {
-        getAvatarPath() {
-            return require("../../../../backend/public/img/users/" +
+    data() {
+        return {
+            photo: null
+        };
+    },
+    async mounted() {
+        if (this.review.user.avatar !== "default.jpg") {
+            try {
+                this.photo = await getPhotoFromAWS(this.review.user.avatar);
+            } catch (err) {
+                this.photo = require("../../../../backend/public/img/users/" +
+                    this.review.user.avatar);
+            }
+        } else {
+            this.photo = require("../../../../backend/public/img/users/" +
                 this.review.user.avatar);
-        },
+        }
+    },
+    methods: {
         getDate(date) {
             return date.slice(0, 10) + ", " + date.slice(11, 16);
         }

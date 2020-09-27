@@ -27,7 +27,7 @@ export default {
     data() {
         return {
             sidebarStatus: "sidebar-closed",
-            UserData,
+            UserData
         };
     },
 
@@ -42,7 +42,7 @@ export default {
             UserData.avatar = user.avatar;
             UserData.favourites = user.favourites;
             EventBus.$emit("show-pop-alert", {
-                content: `Nice to see you again, ${user.name}!`,
+                content: `Nice to see you again, ${user.name}!`
             });
         } else {
             UserData.id = null;
@@ -56,7 +56,7 @@ export default {
         EventBus.$on("close-sidebar", () => {
             this.sidebarStatus = "sidebar-closed";
         });
-    },
+    }
 };
 </script>
 

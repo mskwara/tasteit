@@ -47,7 +47,7 @@ export default {
         setRoute,
         async login() {
             try {
-                const response = await axios.post("api/v1users/login", {
+                const response = await axios.post("api/v1/users/login", {
                     email: this.email,
                     password: this.password,
                 });

@@ -12,11 +12,11 @@
                 <div
                     v-if="
                         recipe.imageCover != null &&
-                        recipe.imageCover != '' &&
-                        recipe.imageCover != 'undefined'
+                            recipe.imageCover != '' &&
+                            recipe.imageCover != 'undefined'
                     "
                 >
-                    <img class="cover" :src="getImageCover()" />
+                    <img class="cover" :src="awsImageCover" />
                 </div>
                 <img
                     v-else-if="photo == null"
@@ -55,7 +55,7 @@
                 <p>{{ recipe.shortDescription }}</p>
             </div>
             <div class="user">
-                <img class="avatar" :src="getAvatarPath()" />
+                <img class="avatar" :src="awsUserAvatar" />
                 <p v-if="active">
                     by
                     <b>{{ recipe.user.name }} {{ recipe.user.surname }}</b>
@@ -82,7 +82,7 @@
 
 <script>
 import MyButton from "../utils/MyButton";
-import { setRoute } from "../../services/methods";
+import { setRoute, getPhotoFromAWS } from "../../services/methods";
 import UserData from "../../services/user-data.js";
 import StarRating from "vue-star-rating";
 import EventBus from "../../services/event-bus.js";
@@ -95,13 +95,13 @@ export default {
         recipe: Object,
         active: {
             type: Boolean,
-            default: true,
+            default: true
         },
         photo: {
             type: String,
-            default: null,
+            default: null
         },
-        showFavourite: Boolean,
+        showFavourite: Boolean
     },
     data() {
         return {
@@ -109,9 +109,13 @@ export default {
             UserData,
             isFavourite: false,
             isLoggedIn: false,
+            awsImageCover: null,
+            awsUserAvatar: null
         };
     },
     mounted() {
+        this.getImageCover();
+        this.getAvatarPath();
         if (
             UserData.id != null &&
             UserData.favourites.includes(this.recipe._id)
@@ -121,32 +125,42 @@ export default {
     },
     methods: {
         setRoute,
-        getImageCover() {
+        async getImageCover() {
             try {
                 if (
                     this.recipe.imageCover != null &&
                     this.recipe.imageCover != "" &&
                     this.recipe.imageCover != "undefined"
                 ) {
-                    return require(`../../../../backend/public/img/recipes/${this.recipe.imageCover}`);
+                    this.awsImageCover = await getPhotoFromAWS(
+                        this.recipe.imageCover
+                    );
+                    // return require(`../../../../backend/public/img/recipes/${this.recipe.imageCover}`);
                 } else {
-                    return require(`../../../../backend/public/img/recipes/default.jpg`);
+                    this.awsImageCover = require(`../../../../backend/public/img/recipes/default.jpg`);
                 }
             } catch (err) {
-                return require(`../../../../backend/public/img/recipes/default.jpg`);
+                this.awsImageCover = require(`../../../../backend/public/img/recipes/default.jpg`);
             }
         },
-        getAvatarPath() {
+        async getAvatarPath() {
             try {
-                if (this.active) {
-                    return require("../../../../backend/public/img/users/" +
-                        this.recipe.user.avatar);
+                // if (this.active) {
+                //     return require("../../../../backend/public/img/users/" +
+                //         this.recipe.user.avatar);
+                // } else {
+                //     return require("../../../../backend/public/img/users/" +
+                //         this.recipe.user.avatar);
+                // }
+                if (this.recipe.user.avatar !== "default.jpg") {
+                    this.awsUserAvatar = await getPhotoFromAWS(
+                        this.recipe.user.avatar
+                    );
                 } else {
-                    return require("../../../../backend/public/img/users/" +
-                        this.recipe.user.avatar);
+                    this.awsUserAvatar = require("../../../../backend/public/img/users/default.jpg");
                 }
             } catch (err) {
-                return require("../../../../backend/public/img/users/default.jpg");
+                this.awsUserAvatar = require("../../../../backend/public/img/users/default.jpg");
             }
         },
         async addToFavourites() {
@@ -159,7 +173,7 @@ export default {
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = true;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been added to your favourites!`,
+                    content: `${this.recipe.name} has been added to your favourites!`
                 });
             } else {
                 // wykasowanie z ulubionych
@@ -170,11 +184,11 @@ export default {
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = false;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been removed from your favourites!`,
+                    content: `${this.recipe.name} has been removed from your favourites!`
                 });
             }
-        },
-    },
+        }
+    }
 };
 </script>
 

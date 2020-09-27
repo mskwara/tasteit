@@ -3,6 +3,10 @@ const User = require("../models/userModel");
 const AppError = require("../utilities/appError");
 const multer = require("multer");
 const sharp = require("sharp");
+const aws = require("aws-sdk");
+
+aws.config.region = "eu-central-1";
+const s3 = new aws.S3({ apiVersion: "2006-03-01" });
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find();
@@ -80,11 +84,19 @@ exports.resizeUserImage = catchAsync(async (req, res, next) => {
     // 1) Cover image
     req.body.avatar = `user-${Date.now()}-avatar.jpeg`;
 
-    await sharp(req.files.avatar[0].buffer)
+    req.files.avatar[0].buffer = await sharp(req.files.avatar[0].buffer)
         .resize(300, 300)
         .toFormat("jpeg")
         .jpeg({ quality: 100 })
-        .toFile(`public/img/users/${req.body.avatar}`);
+        .toBuffer();
+
+    const params = {
+        Bucket: process.env.S3_BUCKET,
+        Key: req.body.avatar,
+        Body: req.files.avatar[0].buffer,
+    };
+
+    await s3.upload(params).promise();
 
     next();
 });
