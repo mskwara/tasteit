@@ -5,13 +5,27 @@
             <p class="title">{{ recipe.name }}</p>
             <divider />
             <div class="content">
-                <ingredients :ingredients="recipe.ingredients" :portion="recipe.portion" />
-                <stepper :steps="recipe.steps" :recipeID="recipe._id" @update-reviews="getRecipe" />
+                <ingredients
+                    :ingredients="recipe.ingredients"
+                    :portion="recipe.portion"
+                />
+                <stepper
+                    :steps="recipe.steps"
+                    :recipeID="recipe._id"
+                    @update-reviews="getRecipe"
+                />
             </div>
         </div>
-        <div class="reviews" v-if="recipe.reviews != null && recipe.reviews.length > 0">
+        <div
+            class="reviews"
+            v-if="recipe.reviews != null && recipe.reviews.length > 0"
+        >
             <p class="title">REVIEWS</p>
-            <review v-for="review in recipe.reviews" :key="review._id" :review="review" />
+            <review
+                v-for="review in recipe.reviews"
+                :key="review._id"
+                :review="review"
+            />
         </div>
     </div>
 </template>
@@ -30,7 +44,7 @@ export default {
     data() {
         return {
             recipe: {},
-            loading: true
+            loading: true,
         };
     },
     async created() {
@@ -45,11 +59,11 @@ export default {
     methods: {
         async getRecipe() {
             const response = await axios.get(
-                `recipes/${this.$route.params.id}`
+                `api/v1/recipes/${this.$route.params.id}`
             );
             this.recipe = response.data.data.recipe;
-        }
-    }
+        },
+    },
 };
 </script>
 

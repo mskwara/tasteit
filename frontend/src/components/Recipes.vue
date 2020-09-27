@@ -2,7 +2,7 @@
     <div>
         <spinner v-if="loading" />
         <div id="recipes">
-            <p class="title">{{title}}</p>
+            <p class="title">{{ title }}</p>
             <divider />
             <p v-if="recipes.length == 0">There is no recipe yet!</p>
             <recipe-tile
@@ -28,24 +28,24 @@ export default {
     components: {
         RecipeTile,
         Spinner,
-        Divider
+        Divider,
     },
     data() {
         return {
             recipes: Array,
             loading: true,
             isLoggedIn: null,
-            title: "Recipes"
+            title: "Recipes",
         };
     },
     async mounted() {
         try {
             let response;
             if (this.$route.params.userId == null) {
-                response = await axios.get("recipes");
+                response = await axios.get("api/v1/recipes");
             } else {
                 response = await axios.get(
-                    `recipes/user/${this.$route.params.userId}`
+                    `api/v1/recipes/user/${this.$route.params.userId}`
                 );
             }
             this.recipes = response.data.data.recipes;
@@ -59,12 +59,14 @@ export default {
             console.error(error);
         }
 
-        EventBus.$on("filter-recipes", async filter => {
+        EventBus.$on("filter-recipes", async (filter) => {
             this.loading = true;
             let response;
             if (filter.type === "byUser") {
                 // filter by userId
-                response = await axios.get(`recipes/user/${filter.userId}`);
+                response = await axios.get(
+                    `api/v1/recipes/user/${filter.userId}`
+                );
                 this.recipes = response.data.data.recipes;
                 this.title =
                     response.data.user.name +
@@ -74,13 +76,13 @@ export default {
             } else if (filter.type === "byFavourites") {
                 // filter by favourites
                 response = await axios.get(
-                    `recipes/favourites/user/${filter.userId}`
+                    `api/v1/recipes/favourites/user/${filter.userId}`
                 );
                 this.recipes = response.data.data.recipes;
                 this.title = "Favourites";
             } else {
                 // default recipes without a filter
-                response = await axios.get(`recipes`);
+                response = await axios.get(`api/v1/recipes`);
                 this.recipes = response.data.data.recipes;
                 this.title = "Recipes";
             }
@@ -94,7 +96,7 @@ export default {
                 this.isLoggedIn = true;
             }
         });
-    }
+    },
 };
 </script>
 

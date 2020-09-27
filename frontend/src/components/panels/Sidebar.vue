@@ -1,9 +1,9 @@
 <template>
     <div id="sidebar" :class="status">
-        <div class="content" v-if="status=='opened'">
+        <div class="content" v-if="status == 'opened'">
             <div class="user-info" v-if="user.id != null">
                 <img class="avatar" :src="getAvatarPath()" />
-                <p>{{UserData.name}} {{UserData.surname}}</p>
+                <p>{{ UserData.name }} {{ UserData.surname }}</p>
             </div>
             <div class="menu" v-if="user.id != null">
                 <my-button
@@ -15,13 +15,26 @@
                 <div class="link" @click="filterRecipes({})">Home</div>
                 <div
                     class="link"
-                    @click="filterRecipes({type: 'byUser', userId: UserData.id})"
-                >My recipes</div>
+                    @click="
+                        filterRecipes({ type: 'byUser', userId: UserData.id })
+                    "
+                >
+                    My recipes
+                </div>
                 <div
                     class="link"
-                    @click="filterRecipes({type: 'byFavourites', userId: UserData.id})"
-                >Favourites</div>
-                <div class="link" @click="setRouteWrap('profile', {})">My profile</div>
+                    @click="
+                        filterRecipes({
+                            type: 'byFavourites',
+                            userId: UserData.id,
+                        })
+                    "
+                >
+                    Favourites
+                </div>
+                <div class="link" @click="setRouteWrap('profile', {})">
+                    My profile
+                </div>
                 <div class="link" @click="logout()">Logout</div>
             </div>
             <div class="menu" style="margin-top: 20px" v-else>
@@ -31,11 +44,13 @@
                     type="full"
                     :click="setRouteWrap.bind(null, 'signup', {})"
                 />
-                <div class="link" @click="setRouteWrap('recipes', {})">Recipes</div>
+                <div class="link" @click="setRouteWrap('recipes', {})">
+                    Recipes
+                </div>
                 <div class="link" @click="setRouteWrap('login', {})">Login</div>
             </div>
             <div class="footer">
-                <p>{{footer}}</p>
+                <p>{{ footer }}</p>
             </div>
         </div>
     </div>
@@ -59,9 +74,9 @@ export default {
                 id: "",
                 name: "",
                 surname: "",
-                avatar: ""
+                avatar: "",
             },
-            UserData
+            UserData,
         };
     },
     methods: {
@@ -83,7 +98,7 @@ export default {
             }
         },
         async logout() {
-            await axios.post("/users/logout");
+            await axios.post("api/v1/users/logout");
             this.clearUserData(UserData);
             EventBus.$emit("update-user-data");
             EventBus.$emit("close-sidebar");
@@ -95,7 +110,7 @@ export default {
                 EventBus.$emit("filter-recipes", filter);
             }
             EventBus.$emit("close-sidebar");
-        }
+        },
     },
     mounted() {
         const date = new Date();
@@ -126,7 +141,7 @@ export default {
         EventBus.$on("close-sidebar", () => {
             this.status = "closed";
         });
-    }
+    },
 };
 </script>
 

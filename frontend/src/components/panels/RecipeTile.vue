@@ -12,8 +12,8 @@
                 <div
                     v-if="
                         recipe.imageCover != null &&
-                            recipe.imageCover != '' &&
-                            recipe.imageCover != 'undefined'
+                        recipe.imageCover != '' &&
+                        recipe.imageCover != 'undefined'
                     "
                 >
                     <img class="cover" :src="getImageCover()" />
@@ -27,7 +27,9 @@
                 <div class="icons-section">
                     <div class="icon">
                         <img src="../../assets/time.svg" />
-                        <p v-if="recipe.preparationTime">{{ recipe.preparationTime }} min</p>
+                        <p v-if="recipe.preparationTime">
+                            {{ recipe.preparationTime }} min
+                        </p>
                     </div>
                     <div class="icon">
                         <img src="../../assets/difficulty.svg" />
@@ -151,7 +153,7 @@ export default {
             if (!this.UserData.favourites.includes(this.recipe._id)) {
                 // dodanie do ulubionych
                 const response = await axios.post(
-                    `users/${this.UserData.id}/favourites/${this.recipe._id}`
+                    `api/v1/users/${this.UserData.id}/favourites/${this.recipe._id}`
                 );
                 this.UserData.favourites =
                     response.data.data.updatedUser.favourites;
@@ -162,7 +164,7 @@ export default {
             } else {
                 // wykasowanie z ulubionych
                 const response = await axios.delete(
-                    `users/${this.UserData.id}/favourites/${this.recipe._id}`
+                    `api/v1/users/${this.UserData.id}/favourites/${this.recipe._id}`
                 );
                 this.UserData.favourites =
                     response.data.data.updatedUser.favourites;

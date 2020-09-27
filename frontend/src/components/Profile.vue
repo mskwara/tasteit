@@ -1,16 +1,26 @@
 <template>
     <div class="page">
-        <p class="title">{{UserData.name}} {{UserData.surname}}</p>
+        <p class="title">{{ UserData.name }} {{ UserData.surname }}</p>
         <divider />
         <div class="content">
             <div class="avatar-changer">
                 <img class="avatar" :src="getAvatarPath()" />
                 <div class="buttons">
-                    <my-file-input width="100%" :showFilename="false" @photo-change="avatarChange" />
+                    <my-file-input
+                        width="100%"
+                        :showFilename="false"
+                        @photo-change="avatarChange"
+                    />
                 </div>
             </div>
             <div class="form">
-                <my-input type="text" class="field" field="Name" width="80%" v-model="user.name" />
+                <my-input
+                    type="text"
+                    class="field"
+                    field="Name"
+                    width="80%"
+                    v-model="user.name"
+                />
                 <my-input
                     type="text"
                     class="field"
@@ -18,7 +28,13 @@
                     width="80%"
                     v-model="user.surname"
                 />
-                <my-input type="text" class="field" field="Email" width="80%" v-model="user.email" />
+                <my-input
+                    type="text"
+                    class="field"
+                    field="Email"
+                    width="80%"
+                    v-model="user.email"
+                />
 
                 <my-button text="Save" :click="save" />
             </div>
@@ -47,8 +63,8 @@ export default {
                 name: UserData.name,
                 surname: UserData.surname,
                 email: UserData.email,
-                avatar: null
-            }
+                avatar: null,
+            },
         };
     },
     methods: {
@@ -63,14 +79,14 @@ export default {
             this.user.avatar = photo;
             var reader = new FileReader();
             let vm = this;
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 // vm.photo = event.target.result;
                 const i = new Image();
                 i.onload = () => {
                     console.log(i.width, i.height);
 
                     if (i.height >= i.width) {
-                        Clipper(event.target.result, function() {
+                        Clipper(event.target.result, function () {
                             this.resize(300)
                                 .crop(
                                     0,
@@ -80,12 +96,12 @@ export default {
                                     300,
                                     300
                                 )
-                                .toDataURL(function(dataUrl) {
+                                .toDataURL(function (dataUrl) {
                                     vm.photo = dataUrl;
                                 });
                         });
                     } else {
-                        Clipper(event.target.result, function() {
+                        Clipper(event.target.result, function () {
                             this.resize(null, 300)
                                 .crop(
                                     i.width > 300
@@ -95,7 +111,7 @@ export default {
                                     300,
                                     300
                                 )
-                                .toDataURL(function(dataUrl) {
+                                .toDataURL(function (dataUrl) {
                                     vm.photo = dataUrl;
                                 });
                         });
@@ -122,7 +138,7 @@ export default {
             }
 
             const response = await axios.patch(
-                `users/${this.UserData.id}`,
+                `api/v1/users/${this.UserData.id}`,
                 formData
             );
 
@@ -134,10 +150,10 @@ export default {
 
             EventBus.$emit("update-user-data");
             EventBus.$emit("show-pop-alert", {
-                content: `Your profile has been updated!`
+                content: `Your profile has been updated!`,
             });
-        }
-    }
+        },
+    },
 };
 </script>
 

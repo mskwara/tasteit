@@ -7,22 +7,38 @@
         <!-- DURING THE INSTRUCTIONS -->
         <div class="content" v-if="step < steps.length">
             <div class="top" v-if="started()">
-                <div class="header" v-if="steps[step].optional == true">Optional step</div>
+                <div class="header" v-if="steps[step].optional == true">
+                    Optional step
+                </div>
                 <step
                     class="step"
                     :content="steps[step].before"
                     header="Before you start..."
                     v-if="steps[step].before"
                 />
-                <step class="step" :content="steps[step].content" :header="makeStepHeader()" />
+                <step
+                    class="step"
+                    :content="steps[step].content"
+                    :header="makeStepHeader()"
+                />
                 <counter :time="steps[step].time" v-if="steps[step].time" />
             </div>
             <div class="bottom">
-                <my-button text="Start" :click="start" class="button" v-if="!started()" />
-
-                <my-button text="Previous" class="button" :click="back" v-if="started()" />
                 <my-button
-                    :text="step < steps.length-1 ? 'Next' : 'Finish'"
+                    text="Start"
+                    :click="start"
+                    class="button"
+                    v-if="!started()"
+                />
+
+                <my-button
+                    text="Previous"
+                    class="button"
+                    :click="back"
+                    v-if="started()"
+                />
+                <my-button
+                    :text="step < steps.length - 1 ? 'Next' : 'Finish'"
                     :click="next"
                     class="button"
                     v-if="started()"
@@ -55,7 +71,12 @@
                     v-if="active"
                     :disabled="review.content == '' || review.rating == null"
                 />
-                <my-button text="Send a review" class="button" :disabled="true" v-else />
+                <my-button
+                    text="Send a review"
+                    class="button"
+                    :disabled="true"
+                    v-else
+                />
             </div>
         </div>
     </div>
@@ -78,13 +99,13 @@ export default {
     props: {
         steps: {
             type: Array,
-            default: () => []
+            default: () => [],
         },
         active: {
             type: Boolean,
-            default: true
+            default: true,
         },
-        recipeID: String
+        recipeID: String,
     },
     data() {
         return {
@@ -93,8 +114,8 @@ export default {
                 user: "",
                 recipe: "",
                 content: "",
-                rating: null
-            }
+                rating: null,
+            },
         };
     },
     methods: {
@@ -122,18 +143,18 @@ export default {
         async sendReview() {
             this.review.user = UserData.id;
             this.review.recipe = this.recipeID;
-            await axios.post("reviews", this.review);
+            await axios.post("api/v1/reviews", this.review);
             EventBus.$emit("show-alert", {
                 title: "Excellent!",
-                content: "Your review has been posted below this recipe!"
+                content: "Your review has been posted below this recipe!",
             });
             this.review.user = "";
             this.review.recipe = "";
             this.review.content = "";
             this.review.rating = null;
             this.$emit("update-reviews");
-        }
-    }
+        },
+    },
 };
 </script>
 

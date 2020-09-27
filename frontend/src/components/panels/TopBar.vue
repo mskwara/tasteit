@@ -21,7 +21,7 @@ export default {
     data() {
         return {
             btnText: "Login",
-            sidebarStatus: "sidebar-closed"
+            sidebarStatus: "sidebar-closed",
         };
     },
     mounted() {
@@ -55,16 +55,16 @@ export default {
             if (this.btnText === "Login") {
                 this.setRoute("login", {});
             } else {
-                await axios.post("/users/logout");
+                await axios.post("api/v1/users/logout");
                 this.clearUserData(UserData);
                 this.filterRecipes({});
                 EventBus.$emit("update-user-data");
                 EventBus.$emit("show-pop-alert", {
-                    content: `You have been logged out!`
+                    content: `You have been logged out!`,
                 });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

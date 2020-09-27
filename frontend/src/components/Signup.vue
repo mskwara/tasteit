@@ -6,13 +6,35 @@
             <div class="avatar-changer">
                 <img class="avatar" :src="getAvatarPath()" />
                 <div class="buttons">
-                    <my-file-input width="100%" :showFilename="false" @photo-change="avatarChange" />
+                    <my-file-input
+                        width="100%"
+                        :showFilename="false"
+                        @photo-change="avatarChange"
+                    />
                 </div>
             </div>
             <div class="form">
-                <my-input type="text" class="field" field="Name" width="80%" v-model="name" />
-                <my-input type="text" class="field" field="Surname" width="80%" v-model="surname" />
-                <my-input type="text" class="field" field="Email" width="80%" v-model="email" />
+                <my-input
+                    type="text"
+                    class="field"
+                    field="Name"
+                    width="80%"
+                    v-model="name"
+                />
+                <my-input
+                    type="text"
+                    class="field"
+                    field="Surname"
+                    width="80%"
+                    v-model="surname"
+                />
+                <my-input
+                    type="text"
+                    class="field"
+                    field="Email"
+                    width="80%"
+                    v-model="email"
+                />
 
                 <my-input
                     type="password"
@@ -28,7 +50,9 @@
                     width="80%"
                     v-model="passwordConfirm"
                 />
-                <a class="no-account" @click="setRoute('login', {})">I have an account already</a>
+                <a class="no-account" @click="setRoute('login', {})"
+                    >I have an account already</a
+                >
                 <my-button text="Sign up" :click="signup" />
             </div>
         </div>
@@ -57,7 +81,7 @@ export default {
             avatar: null, //send
             password: "",
             passwordConfirm: "",
-            photo: null //display
+            photo: null, //display
         };
     },
     methods: {
@@ -72,14 +96,14 @@ export default {
             this.avatar = photo;
             var reader = new FileReader();
             let vm = this;
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 // vm.photo = event.target.result;
                 const i = new Image();
                 i.onload = () => {
                     console.log(i.width, i.height);
 
                     if (i.height >= i.width) {
-                        Clipper(event.target.result, function() {
+                        Clipper(event.target.result, function () {
                             this.resize(300)
                                 .crop(
                                     0,
@@ -89,12 +113,12 @@ export default {
                                     300,
                                     300
                                 )
-                                .toDataURL(function(dataUrl) {
+                                .toDataURL(function (dataUrl) {
                                     vm.photo = dataUrl;
                                 });
                         });
                     } else {
-                        Clipper(event.target.result, function() {
+                        Clipper(event.target.result, function () {
                             this.resize(null, 300)
                                 .crop(
                                     i.width > 300
@@ -104,7 +128,7 @@ export default {
                                     300,
                                     300
                                 )
-                                .toDataURL(function(dataUrl) {
+                                .toDataURL(function (dataUrl) {
                                     vm.photo = dataUrl;
                                 });
                         });
@@ -134,7 +158,10 @@ export default {
                     formData.append("password", this.password);
                     formData.append("passwordConfirm", this.passwordConfirm);
 
-                    const response = await axios.post("users/signup", formData);
+                    const response = await axios.post(
+                        "api/v1/users/signup",
+                        formData
+                    );
                     const user = response.data.data.user;
                     // this.clearInputs();
 
@@ -149,13 +176,13 @@ export default {
                     if (error.response.status === 400) {
                         EventBus.$emit("show-alert", {
                             title: "Something went wrong...",
-                            content: "Please provide valid data!"
+                            content: "Please provide valid data!",
                         });
                     } else if (error.response.status === 500) {
                         EventBus.$emit("show-alert", {
                             title: "Something went wrong...",
                             content:
-                                "There is a problem with the server... Please try to sign up later!"
+                                "There is a problem with the server... Please try to sign up later!",
                         });
                     }
                 }
@@ -172,13 +199,13 @@ export default {
             if (field.length < minlen) {
                 EventBus.$emit("show-alert", {
                     title: "Something went wrong...",
-                    content: `The field "${fieldname}" must have more or equal ${minlen} characters!`
+                    content: `The field "${fieldname}" must have more or equal ${minlen} characters!`,
                 });
                 return false;
             }
             return true;
-        }
-    }
+        },
+    },
 };
 </script>
 

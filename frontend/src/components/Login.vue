@@ -3,7 +3,13 @@
         <p class="title">Login</p>
         <divider />
         <div class="content">
-            <my-input class="field" type="text" field="Email" width="80%" v-model="email" />
+            <my-input
+                class="field"
+                type="text"
+                field="Email"
+                width="80%"
+                v-model="email"
+            />
             <my-input
                 class="field"
                 type="password"
@@ -11,7 +17,9 @@
                 width="80%"
                 v-model="password"
             />
-            <a class="no-account" @click="setRoute('signup', {})">I don't have an account</a>
+            <a class="no-account" @click="setRoute('signup', {})"
+                >I don't have an account</a
+            >
             <my-button text="Login" :click="login" />
         </div>
     </div>
@@ -32,16 +40,16 @@ export default {
     data() {
         return {
             email: "",
-            password: ""
+            password: "",
         };
     },
     methods: {
         setRoute,
         async login() {
             try {
-                const response = await axios.post("users/login", {
+                const response = await axios.post("api/v1users/login", {
                     email: this.email,
-                    password: this.password
+                    password: this.password,
                 });
 
                 const user = response.data.data.user;
@@ -55,25 +63,25 @@ export default {
                 UserData.favourites = user.favourites;
                 EventBus.$emit("update-user-data");
                 EventBus.$emit("show-pop-alert", {
-                    content: `Nice to see you again, ${user.name}!`
+                    content: `Nice to see you again, ${user.name}!`,
                 });
                 this.setRoute("recipes", {});
             } catch (error) {
                 if (error.response.status === 401) {
                     EventBus.$emit("show-alert", {
                         title: "Something went wrong...",
-                        content: "Invalid email or password!"
+                        content: "Invalid email or password!",
                     });
                 } else if (error.response.status === 400) {
                     EventBus.$emit("show-alert", {
                         title: "Something went wrong...",
-                        content: "Please fill empty fields!"
+                        content: "Please fill empty fields!",
                     });
                 } else {
                     EventBus.$emit("show-alert", {
                         title: "Something went wrong...",
                         content:
-                            "There is a problem with the server... Please try to login later!"
+                            "There is a problem with the server... Please try to login later!",
                     });
                 }
             }
@@ -81,8 +89,8 @@ export default {
         clearInputs() {
             this.email = "";
             this.password = "";
-        }
-    }
+        },
+    },
 };
 </script>
 
