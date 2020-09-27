@@ -93,20 +93,20 @@ export default {
         recipe: Object,
         active: {
             type: Boolean,
-            default: true
+            default: true,
         },
         photo: {
             type: String,
-            default: null
+            default: null,
         },
-        showFavourite: Boolean
+        showFavourite: Boolean,
     },
     data() {
         return {
             coverImageSrc: "",
             UserData,
             isFavourite: false,
-            isLoggedIn: false
+            isLoggedIn: false,
         };
     },
     mounted() {
@@ -157,7 +157,7 @@ export default {
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = true;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been added to your favourites!`
+                    content: `${this.recipe.name} has been added to your favourites!`,
                 });
             } else {
                 // wykasowanie z ulubionych
@@ -168,11 +168,11 @@ export default {
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = false;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been removed from your favourites!`
+                    content: `${this.recipe.name} has been removed from your favourites!`,
                 });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -318,7 +318,7 @@ export default {
             text-align: left;
             overflow: hidden;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             height: inherit;
         }
