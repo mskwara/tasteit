@@ -5,7 +5,6 @@
     "main": "index.js",
     "scripts": {
         "start": "cd backend && node server.js",
-        "build": "cd frontend && npm run build",
         "heroku-postbuild": "cd frontend && npm run serve"
     },
     "dependencies": {
