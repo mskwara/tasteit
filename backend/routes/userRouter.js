@@ -4,17 +4,6 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
-router.route("/").get(userController.getAllUsers);
-
-router
-    .route("/:id")
-    .patch(
-        authController.protect,
-        userController.uploadUserImage,
-        userController.resizeUserImage,
-        userController.updateUser
-    );
-
 router
     .route("/signup")
     .post(
@@ -25,6 +14,18 @@ router
 router.route("/login").post(authController.login);
 router.route("/logout").post(authController.logout);
 router.route("/isloggedin").get(authController.isLoggedIn);
+
+router.use(authController.protect);
+
+router.route("/").get(userController.getAllUsers);
+
+router
+    .route("/:id")
+    .patch(
+        userController.uploadUserImage,
+        userController.resizeUserImage,
+        userController.updateUser
+    );
 
 router
     .route("/:userId/favourites/:recipeId")

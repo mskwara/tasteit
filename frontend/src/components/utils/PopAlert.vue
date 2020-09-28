@@ -1,5 +1,5 @@
 <template>
-    <div id="pop-alert" :style="display()">{{content}}</div>
+    <div id="pop-alert" :style="display()">{{ content }}</div>
 </template>
 
 <script>
@@ -11,7 +11,7 @@ export default {
     data() {
         return {
             displayed: false,
-            content: null
+            content: null,
         };
     },
     mounted() {
@@ -28,8 +28,8 @@ export default {
             if (!this.displayed)
                 return "opacity: 0; height: 0 ; top: -300px ; transition: height 0ms 0.5s, opacity 0.5s 0ms, top 0ms 0.5s";
             return "opacity: 0.8 ; height: 40px ; top: 0 ; transition: height 0ms 0ms, opacity 0.5s 0ms, top 0ms 0s";
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -38,7 +38,8 @@ export default {
 
 #pop-alert {
     width: 400px;
-    height: 40px;
+    min-height: 40px;
+    padding: 5px;
     position: fixed;
     margin-top: 70px;
     transform: translate(-50%, 0);
@@ -52,6 +53,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
 
     p {
         margin: 0;

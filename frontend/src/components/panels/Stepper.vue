@@ -143,7 +143,9 @@ export default {
         async sendReview() {
             this.review.user = UserData.id;
             this.review.recipe = this.recipeID;
-            await axios.post("api/v1/reviews", this.review);
+            await axios.post("api/v1/reviews", this.review, {
+                withCredentials: true,
+            });
             EventBus.$emit("show-alert", {
                 title: "Excellent!",
                 content: "Your review has been posted below this recipe!",

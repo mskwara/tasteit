@@ -12,8 +12,8 @@
                 <div
                     v-if="
                         recipe.imageCover != null &&
-                            recipe.imageCover != '' &&
-                            recipe.imageCover != 'undefined'
+                        recipe.imageCover != '' &&
+                        recipe.imageCover != 'undefined'
                     "
                 >
                     <img class="cover" :src="awsImageCover" />
@@ -95,13 +95,13 @@ export default {
         recipe: Object,
         active: {
             type: Boolean,
-            default: true
+            default: true,
         },
         photo: {
             type: String,
-            default: null
+            default: null,
         },
-        showFavourite: Boolean
+        showFavourite: Boolean,
     },
     data() {
         return {
@@ -110,7 +110,7 @@ export default {
             isFavourite: false,
             isLoggedIn: false,
             awsImageCover: null,
-            awsUserAvatar: null
+            awsUserAvatar: null,
         };
     },
     mounted() {
@@ -167,28 +167,34 @@ export default {
             if (!this.UserData.favourites.includes(this.recipe._id)) {
                 // dodanie do ulubionych
                 const response = await axios.post(
-                    `api/v1/users/${this.UserData.id}/favourites/${this.recipe._id}`
+                    `api/v1/users/${this.UserData.id}/favourites/${this.recipe._id}`,
+                    {
+                        withCredentials: true,
+                    }
                 );
                 this.UserData.favourites =
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = true;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been added to your favourites!`
+                    content: `${this.recipe.name} has been added to your favourites!`,
                 });
             } else {
                 // wykasowanie z ulubionych
                 const response = await axios.delete(
-                    `api/v1/users/${this.UserData.id}/favourites/${this.recipe._id}`
+                    `api/v1/users/${this.UserData.id}/favourites/${this.recipe._id}`,
+                    {
+                        withCredentials: true,
+                    }
                 );
                 this.UserData.favourites =
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = false;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been removed from your favourites!`
+                    content: `${this.recipe.name} has been removed from your favourites!`,
                 });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

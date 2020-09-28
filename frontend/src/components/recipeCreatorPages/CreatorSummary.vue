@@ -99,7 +99,9 @@ export default {
                 formData.append("steps", JSON.stringify(this.recipe.steps));
                 formData.append("user", UserData.id);
 
-                await axios.post("api/v1/recipes", formData);
+                await axios.post("api/v1/recipes", formData, {
+                    withCredentials: true,
+                });
 
                 EventBus.$emit("show-alert", {
                     title: "Success",

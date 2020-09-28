@@ -8,6 +8,7 @@ router
     .route("/")
     .get(recipeController.getAllRecipes)
     .post(
+        authController.protect,
         recipeController.uploadRecipeImages,
         recipeController.resizeRecipeImages,
         recipeController.createRecipe
@@ -21,7 +22,7 @@ router
 router
     .route("/:id")
     .get(recipeController.getRecipe)
-    .patch(recipeController.updateRecipe)
-    .delete(recipeController.deleteRecipe);
+    .patch(authController.protect, recipeController.updateRecipe)
+    .delete(authController.protect, recipeController.deleteRecipe);
 
 module.exports = router;

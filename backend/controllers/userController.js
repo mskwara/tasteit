@@ -77,7 +77,7 @@ const upload = multer({
 exports.uploadUserImage = upload.fields([{ name: "avatar", maxCount: 1 }]);
 
 exports.resizeUserImage = catchAsync(async (req, res, next) => {
-    console.log(req.files.avatar);
+    // console.log(req.files.avatar);
     // console.log(req.body);
 
     if (!req.files.avatar) return next(); //  || !req.files.images
@@ -97,6 +97,13 @@ exports.resizeUserImage = catchAsync(async (req, res, next) => {
     };
 
     await s3.upload(params).promise();
+    if (req.user.avatar !== "default.jpg") {
+        const params1 = {
+            Bucket: process.env.S3_BUCKET,
+            Key: req.user.avatar,
+        };
+        await s3.deleteObject(params1).promise();
+    }
 
     next();
 });
