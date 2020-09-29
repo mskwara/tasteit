@@ -5,14 +5,27 @@
             <p class="title">{{ recipe.name }}</p>
             <divider />
             <div class="content">
-                <ingredients
-                    :ingredients="recipe.ingredients"
-                    :portion="recipe.portion"
-                />
+                <div class="left">
+                    <div class="user">
+                        <img class="avatar" :src="awsUserAvatar" />
+                        <p>
+                            by
+                            <b
+                                >{{ recipe.user.name }}
+                                {{ recipe.user.surname }}</b
+                            >
+                        </p>
+                    </div>
+                    <ingredients
+                        :ingredients="recipe.ingredients"
+                        :portion="recipe.portion"
+                    />
+                </div>
                 <stepper
                     :steps="recipe.steps"
                     :recipeID="recipe._id"
                     @update-reviews="getRecipe"
+                    class="stepper"
                 />
             </div>
         </div>
@@ -36,6 +49,7 @@ import Divider from "./utils/Divider";
 import Stepper from "./panels/Stepper";
 import Spinner from "./utils/Spinner";
 import Review from "./panels/Review";
+import { getPhotoFromAWS } from "../services/methods";
 const axios = require("axios");
 
 export default {
@@ -45,11 +59,13 @@ export default {
         return {
             recipe: {},
             loading: true,
+            awsUserAvatar: null,
         };
     },
     async created() {
         try {
-            this.getRecipe();
+            await this.getRecipe();
+            await this.getAvatarPath();
             this.loading = false;
             // console.log(this.recipe);
         } catch (error) {
@@ -62,6 +78,19 @@ export default {
                 `api/v1/recipes/${this.$route.params.id}`
             );
             this.recipe = response.data.data.recipe;
+        },
+        async getAvatarPath() {
+            try {
+                if (this.recipe.user.avatar !== "default.jpg") {
+                    this.awsUserAvatar = await getPhotoFromAWS(
+                        this.recipe.user.avatar
+                    );
+                } else {
+                    this.awsUserAvatar = require("../../../backend/public/img/users/default.jpg");
+                }
+            } catch (err) {
+                this.awsUserAvatar = require("../../../backend/public/img/users/default.jpg");
+            }
         },
     },
 };
@@ -82,6 +111,31 @@ export default {
             display: flex;
             justify-content: space-between;
             width: 100%;
+
+            .left {
+                display: flex;
+                flex-direction: column;
+
+                .user {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: flex-start;
+                    width: 100%;
+                    margin-left: 20px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+
+                    .avatar {
+                        width: 25px;
+                        border-radius: 25px;
+                        margin-right: 10px;
+                    }
+                    p {
+                        margin: 0;
+                    }
+                }
+            }
         }
     }
     .title {
@@ -95,6 +149,32 @@ export default {
         flex-direction: column;
         align-items: center;
         margin-top: 50px;
+    }
+}
+
+@media only screen and (max-width: 870px) {
+    .page #recipe {
+        .content {
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+
+            .left {
+                margin-bottom: 20px;
+            }
+            .stepper {
+                margin-left: 0;
+                width: 100%;
+            }
+        }
+        .title {
+            font-size: 30pt;
+        }
+    }
+    .page .reviews {
+        .title {
+            font-size: 30pt;
+        }
     }
 }
 </style>

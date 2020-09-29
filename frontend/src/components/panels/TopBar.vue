@@ -2,7 +2,12 @@
     <div id="topbar" :class="sidebarStatus">
         <hamburger class="hamburger" />
         <logo class="logo" />
-        <my-button :text="btnText" type="empty" :click="login_logout" />
+        <my-button
+            class="logout"
+            :text="btnText"
+            type="empty"
+            :click="login_logout"
+        />
     </div>
 </template>
 
@@ -20,7 +25,7 @@ export default {
     components: { MyButton, Logo, Hamburger },
     data() {
         return {
-            btnText: "Login",
+            btnText: UserData.id != null ? "Logout" : "Login",
             sidebarStatus: "sidebar-closed",
         };
     },
@@ -82,7 +87,7 @@ export default {
     position: fixed;
     top: 0;
     margin-left: 0;
-    z-index: 2;
+    z-index: 5;
 
     &.sidebar-opened {
         width: 75%;
@@ -96,11 +101,45 @@ export default {
     }
     .hamburger {
         margin-left: 30px;
+        transition: 0.5s;
     }
     .logo {
         transform: translate(-75px, 0);
         position: absolute;
         left: 50%;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    #topbar {
+        .sidebar-opened {
+            width: 10%;
+        }
+    }
+}
+@media only screen and (max-width: 700px) {
+    #topbar {
+        .logo {
+            display: none;
+        }
+        .logout {
+            display: none;
+        }
+        &.sidebar-opened {
+            .hamburger {
+                margin-left: 5px;
+            }
+        }
+    }
+}
+@media only screen and (max-width: 400px) {
+    #topbar {
+        &.sidebar-opened {
+            .hamburger {
+                margin-left: 0;
+                scale: 0.5;
+            }
+        }
     }
 }
 </style>

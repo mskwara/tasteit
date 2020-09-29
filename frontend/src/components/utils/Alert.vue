@@ -1,9 +1,9 @@
 <template>
     <div id="page" :style="display()">
         <div id="alert">
-            <p class="title">{{title}}</p>
+            <p class="title">{{ title }}</p>
             <divider />
-            <p class="content">{{content}}</p>
+            <p class="content">{{ content }}</p>
             <my-button text="Accept" :click="accept" />
         </div>
     </div>
@@ -21,7 +21,7 @@ export default {
         return {
             displayed: false,
             title: null,
-            content: null
+            content: null,
         };
     },
     mounted() {
@@ -39,8 +39,8 @@ export default {
         },
         accept() {
             this.displayed = false;
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -71,6 +71,7 @@ export default {
         flex-direction: column;
         align-items: center;
         z-index: 6;
+        text-align: center;
 
         .title {
             font-size: 20pt;
@@ -82,6 +83,13 @@ export default {
             max-width: 350px;
             margin: 10px;
         }
+    }
+}
+
+@media only screen and (max-width: 430px) {
+    #page #alert {
+        width: 300px;
+        height: auto;
     }
 }
 </style>

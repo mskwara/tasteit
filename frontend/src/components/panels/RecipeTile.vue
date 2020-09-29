@@ -114,6 +114,7 @@ export default {
         };
     },
     mounted() {
+        console.log(this.recipe);
         this.getImageCover();
         this.getAvatarPath();
         if (
@@ -145,16 +146,15 @@ export default {
         },
         async getAvatarPath() {
             try {
-                // if (this.active) {
-                //     return require("../../../../backend/public/img/users/" +
-                //         this.recipe.user.avatar);
-                // } else {
-                //     return require("../../../../backend/public/img/users/" +
-                //         this.recipe.user.avatar);
-                // }
-                if (this.recipe.user.avatar !== "default.jpg") {
+                let userAvatarString;
+                if (!this.recipe.user) {
+                    userAvatarString = UserData.avatar;
+                } else {
+                    userAvatarString = this.recipe.user.avatar;
+                }
+                if (userAvatarString !== "default.jpg") {
                     this.awsUserAvatar = await getPhotoFromAWS(
-                        this.recipe.user.avatar
+                        userAvatarString
                     );
                 } else {
                     this.awsUserAvatar = require("../../../../backend/public/img/users/default.jpg");
@@ -258,8 +258,8 @@ export default {
         transition: width 1s;
     }
     .cover {
-        width: 400px;
-        height: 250px;
+        width: 100%;
+        height: auto;
         margin-bottom: -4px;
         border-radius: 2px 2px 0 0;
         border-bottom: 1px solid $border-400;
@@ -270,6 +270,7 @@ export default {
         flex-direction: column;
         justify-content: flex-end;
         flex: 1;
+        min-height: 30px;
 
         .checkout {
             width: 100%;
@@ -361,6 +362,60 @@ export default {
         }
         p {
             margin: 0;
+        }
+    }
+}
+@media only screen and (max-width: 410px) {
+    #recipeTile {
+        .box {
+            width: 318px;
+            height: 350px;
+            margin: 30px;
+        }
+        .image-box {
+            height: 198px;
+        }
+        .loader {
+            padding-top: 4px;
+        }
+    }
+}
+@media only screen and (max-width: 320px) {
+    #recipeTile {
+        .box {
+            width: 227px;
+            height: 250px;
+            position: relative;
+            margin: 20px;
+        }
+        .image-box {
+            height: 142px;
+        }
+        .loader {
+            padding-top: 0;
+        }
+        .button-section {
+            display: none;
+        }
+        .user {
+            display: block;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            margin: 0;
+
+            p {
+                display: none;
+            }
+        }
+        .icons-section {
+            width: 60%;
+        }
+        .favourite {
+            width: 30px;
+            height: 30px;
         }
     }
 }

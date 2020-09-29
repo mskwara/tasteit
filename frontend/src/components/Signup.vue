@@ -239,6 +239,7 @@ export default {
                 width: 300px;
                 height: 300px;
                 border-radius: 150px;
+                transition: 0.5s;
             }
             .buttons {
                 display: flex;
@@ -249,7 +250,9 @@ export default {
             }
         }
         .form {
-            width: 500px;
+            width: 100%;
+            min-width: 200px;
+            max-width: 500px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -267,6 +270,28 @@ export default {
             }
             .no-account {
                 align-self: flex-end;
+            }
+        }
+    }
+}
+@media only screen and (max-width: 570px) {
+    #login {
+        .content {
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    }
+}
+
+@media only screen and (max-width: 440px) {
+    #login {
+        .content {
+            .avatar-changer {
+                .avatar {
+                    width: 200px;
+                    height: 200px;
+                }
             }
         }
     }

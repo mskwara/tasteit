@@ -167,7 +167,8 @@ export default {
     height: auto;
     border: 1px solid rgb(202, 202, 202);
     background-color: white;
-    min-width: 500px;
+    // min-width: 500px;
+    min-width: 300px;
     margin: 0 0 0 30px;
     display: flex;
     flex-direction: column;

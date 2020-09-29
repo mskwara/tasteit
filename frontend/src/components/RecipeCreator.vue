@@ -12,7 +12,10 @@
             />
         </div>
         <divider />
-        <creator-ingredients :recipe="recipe" @applyIngredients="applyIngredients" />
+        <creator-ingredients
+            :recipe="recipe"
+            @applyIngredients="applyIngredients"
+        />
         <creator-info :recipe="recipe" @applyInfo="applyInfo" />
         <creator-steps :recipe="recipe" @goToSummary="goToSummary" />
         <creator-summary :recipe="recipe" />
@@ -39,7 +42,7 @@ export default {
         CreatorSummary,
 
         Divider,
-        EditableText
+        EditableText,
     },
     data() {
         return {
@@ -52,9 +55,9 @@ export default {
                 steps: [],
                 portion: "",
                 images: [],
-                imageCover: null
+                imageCover: null,
             },
-            progress: 0
+            progress: 0,
         };
     },
     methods: {
@@ -75,8 +78,8 @@ export default {
             document
                 .getElementById("summary")
                 .scrollIntoView({ behavior: "smooth", block: "end" });
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -112,8 +115,8 @@ export default {
         width: 100%;
         display: flex;
         justify-content: center;
-        min-height: 80px;
-        height: 80px;
+        // min-height: 80px;
+        // height: 80px;
         p {
             font-size: 40pt;
             margin: 0;

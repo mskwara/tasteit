@@ -14,7 +14,7 @@
             />
             <div class="underline-interactive" />
             <div class="underline" />
-            <p class="hint" v-if="hint">{{hint}}</p>
+            <p class="hint" v-if="hint">{{ hint }}</p>
         </div>
     </div>
 </template>
@@ -31,13 +31,13 @@ export default {
         inputstyle: String,
         maxlen: Number,
         hint: String,
-        reference: String
+        reference: String,
     },
     methods: {
         getWidth() {
             return `width: ${this.width}`;
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -50,6 +50,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-width: 100px;
     // border: 1px solid red;
 
     .content {

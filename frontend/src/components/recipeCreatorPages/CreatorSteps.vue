@@ -1,6 +1,6 @@
 <template>
     <div id="specify-steps">
-        <steps-viewport :steps="recipe.steps" style="margin-top: 40px;" />
+        <steps-viewport :steps="recipe.steps" style="margin-top: 40px" />
 
         <div class="current-step">
             <p class="progress-title" style="margin-bottom: 0">Stepper</p>
@@ -50,6 +50,7 @@
                 style="width: 40%"
                 :click="addStep"
                 :disabled="step.content.length <= 5"
+                class="small-button"
             />
             <my-button
                 class="apply-button"
@@ -76,10 +77,10 @@ export default {
         MyInput,
         MyButton,
         MyToggle,
-        StepsViewport
+        StepsViewport,
     },
     props: {
-        recipe: Object
+        recipe: Object,
     },
     data() {
         return {
@@ -87,12 +88,12 @@ export default {
                 before: "",
                 content: "",
                 time: null,
-                optional: false
+                optional: false,
             },
             stepPartsVisible: {
                 before: false,
-                time: false
-            }
+                time: false,
+            },
         };
     },
     methods: {
@@ -105,7 +106,7 @@ export default {
                 EventBus.$emit("show-alert", {
                     title: "Invalid duration time",
                     content:
-                        "Please specify duration time as number of minutes."
+                        "Please specify duration time as number of minutes.",
                 });
                 return;
             }
@@ -120,8 +121,8 @@ export default {
         },
         goToSummary() {
             this.$emit("goToSummary");
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -140,6 +141,9 @@ export default {
         width: 100% !important;
         margin-top: 20px !important;
         align-self: center;
+    }
+    .small-button {
+        min-width: 120px;
     }
     .progress-title {
         font-size: 23pt;
@@ -173,6 +177,17 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+    }
+}
+
+@media only screen and (max-width: 680px) {
+    #specify-steps {
+        flex-direction: column;
+        align-items: center;
+
+        .current-step {
+            margin: 0;
         }
     }
 }

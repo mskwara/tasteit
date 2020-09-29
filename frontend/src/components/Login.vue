@@ -109,7 +109,9 @@ export default {
         margin-bottom: 20px;
     }
     .content {
-        width: 500px;
+        width: 100%;
+        min-width: 200px;
+        max-width: 500px;
         display: flex;
         flex-direction: column;
         align-items: center;

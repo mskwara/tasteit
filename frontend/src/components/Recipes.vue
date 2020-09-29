@@ -116,4 +116,20 @@ export default {
         width: 100%;
     }
 }
+
+@media only screen and (max-width: 410px) {
+    #recipes {
+        .title {
+            font-size: 30pt;
+        }
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    #recipes {
+        .title {
+            font-size: 20pt;
+        }
+    }
+}
 </style>

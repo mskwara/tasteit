@@ -5,7 +5,7 @@
                 :ingredients="recipe.ingredients"
                 :portion="recipe.portion"
             />
-            <stepper :steps="recipe.steps" :active="false" />
+            <stepper class="stepper" :steps="recipe.steps" :active="false" />
         </div>
         <my-button
             class="apply-button"
@@ -150,6 +150,26 @@ export default {
         justify-content: space-between;
         align-items: flex-start;
         width: 100%;
+    }
+}
+
+@media only screen and (max-width: 870px) {
+    #summary {
+        .information {
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        .stepper {
+            margin-left: 0;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .title {
+            font-size: 30pt;
+        }
     }
 }
 </style>

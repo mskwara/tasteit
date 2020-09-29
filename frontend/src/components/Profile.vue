@@ -12,6 +12,7 @@
                         @photo-change="avatarChange"
                     />
                 </div>
+                <Spinner v-if="photo_loading" />
             </div>
             <div class="form">
                 <my-input
@@ -37,6 +38,7 @@
                 />
 
                 <my-button text="Save" :click="save" />
+                <Spinner v-if="data_loading" />
             </div>
         </div>
     </div>
@@ -47,6 +49,7 @@ import Divider from "./utils/Divider";
 import UserData from "../services/user-data.js";
 import MyButton from "./utils/MyButton";
 import MyInput from "./utils/MyInput";
+import Spinner from "./utils/Spinner";
 import MyFileInput from "./utils/MyFileInput";
 const axios = require("axios");
 const Clipper = require("image-clipper");
@@ -55,7 +58,7 @@ import { getPhotoFromAWS } from "../services/methods";
 
 export default {
     name: "App",
-    components: { Divider, MyFileInput, MyButton, MyInput },
+    components: { Divider, MyFileInput, MyButton, MyInput, Spinner },
     data() {
         return {
             UserData,
@@ -66,9 +69,12 @@ export default {
                 email: UserData.email,
                 avatar: null,
             },
+            photo_loading: false,
+            data_loading: false,
         };
     },
     async mounted() {
+        console.log(UserData);
         if (UserData.avatar && UserData.avatar !== "default.jpg") {
             // console.log(UserData.avatar);
             try {
@@ -81,7 +87,8 @@ export default {
         }
     },
     methods: {
-        avatarChange(photo) {
+        async avatarChange(photo) {
+            this.photo_loading = true;
             this.user.avatar = photo;
             var reader = new FileReader();
             let vm = this;
@@ -127,8 +134,30 @@ export default {
             };
 
             reader.readAsDataURL(photo);
+            let formData = new FormData();
+            if (this.user.avatar != null) {
+                formData.append("avatar", this.user.avatar);
+            }
+
+            const response = await axios.patch(
+                `api/v1/users/${this.UserData.id}`,
+                formData,
+                {
+                    withCredentials: true,
+                }
+            );
+
+            UserData.avatar = response.data.data.user.avatar;
+            // console.log(UserData.id, UserData.avatar);
+            this.photo_loading = false;
+
+            EventBus.$emit("update-user-data");
+            EventBus.$emit("show-pop-alert", {
+                content: `New photo has been uploaded!`,
+            });
         },
         async save() {
+            this.data_loading = true;
             let formData = new FormData();
             if (this.user.name != "") {
                 formData.append("name", this.user.name);
@@ -138,9 +167,6 @@ export default {
             }
             if (this.user.email != "") {
                 formData.append("email", this.user.email);
-            }
-            if (this.user.avatar != null) {
-                formData.append("avatar", this.user.avatar);
             }
 
             const response = await axios.patch(
@@ -154,9 +180,8 @@ export default {
             UserData.name = response.data.data.user.name;
             UserData.surname = response.data.data.user.surname;
             UserData.email = response.data.data.user.email;
-            UserData.avatar = response.data.data.user.avatar;
             // console.log(UserData.id, UserData.avatar);
-
+            this.data_loading = false;
             EventBus.$emit("update-user-data");
             EventBus.$emit("show-pop-alert", {
                 content: `Your profile has been updated!`,
@@ -179,6 +204,7 @@ export default {
         margin: 0;
         text-transform: uppercase;
         margin-bottom: 20px;
+        text-align: center;
     }
     .content {
         width: 100%;
@@ -226,6 +252,33 @@ export default {
             }
             .no-account {
                 align-self: flex-end;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 540px) {
+    .page {
+        .title {
+            font-size: 25pt;
+        }
+        .content {
+            flex-direction: column;
+            margin-bottom: 20px;
+
+            .avatar-changer {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+
+                .avatar {
+                    width: 100%;
+                    height: auto;
+                }
+            }
+            .form {
+                width: 100%;
             }
         }
     }

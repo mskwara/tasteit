@@ -59,4 +59,14 @@ export default {
         margin: 0;
     }
 }
+@media only screen and (max-width: 450px) {
+    #pop-alert {
+        width: 300px;
+    }
+}
+@media only screen and (max-width: 330px) {
+    #pop-alert {
+        width: 200px;
+    }
+}
 </style>

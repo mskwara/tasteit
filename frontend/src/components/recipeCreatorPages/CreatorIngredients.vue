@@ -1,6 +1,9 @@
 <template>
     <div class="specify-ingredients">
-        <ingredients :ingredients="recipe.ingredients" :portion="recipe.portion" />
+        <ingredients
+            :ingredients="recipe.ingredients"
+            :portion="recipe.portion"
+        />
         <div class="ingredients-creator">
             <p class="progress-title">Specify the ingredients</p>
             <span>
@@ -13,16 +16,20 @@
                 />
                 <span class="toggle-span">
                     <p class="toggle-title">Optional</p>
-                    <my-toggle v-model="ingredient.optional" :value="ingredient.optional" />
+                    <my-toggle
+                        v-model="ingredient.optional"
+                        :value="ingredient.optional"
+                    />
                 </span>
                 <my-button
+                    class="small-button"
                     text="Add"
                     style="width: 30%"
                     :click="addIngredient"
                     :disabled="ingredient.name == ''"
                 />
             </span>
-            <span>
+            <span class="servings">
                 <my-input
                     style="margin-right: 40px"
                     type="text"
@@ -36,9 +43,14 @@
                     style="width: 30%"
                     :click="setPortions"
                     :disabled="portions == ''"
+                    class="small-button"
                 />
             </span>
-            <my-button class="apply-button" text="Apply the ingredients" :click="applyIngredients" />
+            <my-button
+                class="apply-button"
+                text="Apply the ingredients"
+                :click="applyIngredients"
+            />
         </div>
     </div>
 </template>
@@ -57,18 +69,18 @@ export default {
         Ingredients,
         MyInput,
         MyButton,
-        MyToggle
+        MyToggle,
     },
     props: {
-        recipe: Object
+        recipe: Object,
     },
     data() {
         return {
             ingredient: {
                 name: "",
-                optional: false
+                optional: false,
             },
-            portions: ""
+            portions: "",
         };
     },
     methods: {
@@ -88,13 +100,13 @@ export default {
             if (checkIngredients.status === "fail") {
                 EventBus.$emit("show-alert", {
                     title: checkIngredients.error.title,
-                    content: checkIngredients.error.content
+                    content: checkIngredients.error.content,
                 });
                 return;
             }
             this.$emit("applyIngredients");
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -113,6 +125,10 @@ export default {
         width: 60% !important;
         margin-top: 40px !important;
         align-self: center;
+        min-width: 200px;
+    }
+    .small-button {
+        min-width: 60px;
     }
     .progress-title {
         font-size: 23pt;
@@ -136,6 +152,10 @@ export default {
         margin-left: 40px;
         // border: 1px solid red;
 
+        .servings {
+            min-width: 280px;
+        }
+
         span {
             display: flex;
             justify-content: center;
@@ -147,6 +167,29 @@ export default {
                 align-self: center;
                 margin: 0 30px;
                 width: auto;
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .specify-ingredients {
+        flex-direction: column;
+        align-items: center;
+
+        .ingredients-creator {
+            width: 100%;
+        }
+
+        .ingredients-creator {
+            .progress-title {
+                font-size: 16pt;
+            }
+            span {
+                .toggle-span {
+                    flex-direction: column;
+                    margin: 0 10px;
+                }
             }
         }
     }

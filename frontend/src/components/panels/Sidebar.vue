@@ -26,7 +26,7 @@
                     @click="
                         filterRecipes({
                             type: 'byFavourites',
-                            userId: UserData.id
+                            userId: UserData.id,
                         })
                     "
                 >
@@ -64,7 +64,7 @@ import {
     setRoute,
     replaceRoute,
     clearUserData,
-    getPhotoFromAWS
+    getPhotoFromAWS,
 } from "../../services/methods";
 const axios = require("axios");
 
@@ -76,13 +76,13 @@ export default {
             status: "closed",
             footer: "",
             user: {
-                id: "",
-                name: "",
-                surname: "",
-                avatar: ""
+                id: UserData.id,
+                name: UserData.name,
+                surname: UserData.surname,
+                avatar: UserData.avatar,
             },
             UserData,
-            photo: null
+            photo: null,
         };
     },
     methods: {
@@ -110,7 +110,7 @@ export default {
                 EventBus.$emit("filter-recipes", filter);
             }
             EventBus.$emit("close-sidebar");
-        }
+        },
     },
     async updated() {
         if (UserData.avatar && UserData.avatar !== "default.jpg") {
@@ -153,7 +153,7 @@ export default {
         EventBus.$on("close-sidebar", () => {
             this.status = "closed";
         });
-    }
+    },
 };
 </script>
 
@@ -183,9 +183,10 @@ export default {
         }
         p {
             color: white;
+            // min-width: 300px;
+            width: 400px;
             font-size: 18pt;
             margin: 0 20px;
-            min-width: 400px;
         }
     }
 
@@ -245,6 +246,14 @@ export default {
         height: 100%;
         opacity: 1;
         transition: opacity 1s, width 1s;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    #sidebar {
+        &.opened {
+            width: 90% !important;
+        }
     }
 }
 </style>

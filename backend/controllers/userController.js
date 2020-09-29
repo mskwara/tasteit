@@ -96,8 +96,8 @@ exports.resizeUserImage = catchAsync(async (req, res, next) => {
         Body: req.files.avatar[0].buffer,
     };
 
-    await s3.upload(params).promise();
-    if (req.user.avatar !== "default.jpg") {
+    const s3_upload_res = await s3.upload(params).promise();
+    if (s3_upload_res && req.user.avatar !== "default.jpg") {
         const params1 = {
             Bucket: process.env.S3_BUCKET,
             Key: req.user.avatar,

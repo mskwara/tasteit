@@ -3,7 +3,9 @@
         <div class="left">
             <div class="user-info">
                 <img class="avatar" :src="photo" />
-                <p>{{ review.user.name }} {{ review.user.surname }}</p>
+                <p class="name">
+                    {{ review.user.name }} {{ review.user.surname }}
+                </p>
             </div>
         </div>
         <div class="right">
@@ -33,7 +35,7 @@ export default {
     props: { review: Object },
     data() {
         return {
-            photo: null
+            photo: null,
         };
     },
     async mounted() {
@@ -52,8 +54,8 @@ export default {
     methods: {
         getDate(date) {
             return date.slice(0, 10) + ", " + date.slice(11, 16);
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -110,6 +112,79 @@ export default {
         .content {
             font-size: 14pt;
             margin: 10px;
+        }
+    }
+}
+
+@media only screen and (max-width: 870px) {
+    #review {
+        min-height: 70px;
+        .left {
+            .user-info {
+                .avatar {
+                    width: 40px;
+                    height: 40px;
+                }
+                p {
+                    font-size: 14pt;
+                }
+            }
+        }
+        .right {
+            .top .date {
+                font-size: 10pt;
+            }
+            .content {
+                font-size: 12pt;
+            }
+        }
+    }
+}
+@media only screen and (max-width: 540px) {
+    #review {
+        min-height: 50px;
+        .left {
+            .user-info {
+                .avatar {
+                    width: 50px;
+                    height: 50px;
+                }
+                .name {
+                    display: none;
+                }
+            }
+        }
+        .right {
+            .top .date {
+                font-size: 8pt;
+            }
+            .content {
+                font-size: 10pt;
+            }
+        }
+    }
+}
+@media only screen and (max-width: 450px) {
+    #review {
+        min-height: 50px;
+        .left {
+            .user-info {
+                .avatar {
+                    width: 40px;
+                    height: 40px;
+                }
+                .name {
+                    display: none;
+                }
+            }
+        }
+        .right {
+            .top .rating {
+                display: none;
+            }
+            .content {
+                font-size: 10pt;
+            }
         }
     }
 }

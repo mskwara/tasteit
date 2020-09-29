@@ -13,7 +13,11 @@
                 hint="It will be visible in the recipes list"
                 v-model="recipe.shortDescription"
             />
-            <my-file-input style="margin-top: 40px" width="100%" @photo-change="photoChange" />
+            <my-file-input
+                style="margin-top: 40px"
+                width="100%"
+                @photo-change="photoChange"
+            />
 
             <my-input
                 type="text"
@@ -29,7 +33,11 @@
                 title="Select recipe's difficulty"
                 v-model="recipe.difficulty"
             />
-            <my-button class="apply-button" text="Apply the description" :click="applyInfo" />
+            <my-button
+                class="apply-button"
+                text="Apply the description"
+                :click="applyInfo"
+            />
         </div>
     </div>
 </template>
@@ -54,28 +62,28 @@ export default {
         MyButton,
         MySelect,
         RecipeTile,
-        MyFileInput
+        MyFileInput,
     },
     props: {
-        recipe: Object
+        recipe: Object,
     },
     data() {
         return {
             difficulties: [
                 {
                     text: "easy",
-                    value: "easy"
+                    value: "easy",
                 },
                 {
                     text: "medium",
-                    value: "medium"
+                    value: "medium",
                 },
                 {
                     text: "difficult",
-                    value: "difficult"
-                }
+                    value: "difficult",
+                },
             ],
-            photo: null
+            photo: null,
         };
     },
     methods: {
@@ -85,7 +93,7 @@ export default {
             if (checkInfo.status === "fail") {
                 EventBus.$emit("show-alert", {
                     title: checkInfo.error.title,
-                    content: checkInfo.error.content
+                    content: checkInfo.error.content,
                 });
                 return;
             }
@@ -95,13 +103,13 @@ export default {
             EventBus.$emit("recipe-photo-upload", photo);
             var reader = new FileReader();
             let vm = this;
-            reader.onload = async function(event) {
+            reader.onload = async function (event) {
                 // vm.photo = event.target.result;
 
                 var i = new Image();
                 i.src = await event.target.result;
 
-                Clipper(event.target.result, function() {
+                Clipper(event.target.result, function () {
                     this.resize(400)
                         .crop(
                             0,
@@ -111,14 +119,14 @@ export default {
                             400,
                             250
                         )
-                        .toDataURL(function(dataUrl) {
+                        .toDataURL(function (dataUrl) {
                             vm.photo = dataUrl;
                         });
                 });
             };
             reader.readAsDataURL(photo);
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -137,6 +145,7 @@ export default {
         width: 60% !important;
         margin-top: 40px !important;
         align-self: center;
+        min-width: 170px;
     }
     .progress-title {
         font-size: 23pt;
@@ -151,6 +160,20 @@ export default {
         align-items: center;
         height: 70%;
         margin-left: 20px;
+    }
+}
+
+@media only screen and (max-width: 780px) {
+    #specify-recipe-info {
+        flex-direction: column;
+        align-items: center;
+
+        .recipe-info {
+            margin-left: 0;
+            .progress-title {
+                font-size: 16pt;
+            }
+        }
     }
 }
 </style>

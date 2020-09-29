@@ -33,13 +33,13 @@ export default {
         reference: String,
         selectOnClick: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
     data() {
         return {
             active: false,
-            field: this.value
+            field: this.value,
         };
     },
     methods: {
@@ -51,8 +51,8 @@ export default {
                     this.$refs.editabletext.$refs[this.reference].select();
                 }
             });
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -64,6 +64,22 @@ export default {
 
     p {
         text-align: center;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    #editable-text {
+        p {
+            font-size: 25pt !important;
+            margin: 0 !important;
+        }
+    }
+}
+@media only screen and (max-width: 500px) {
+    #editable-text {
+        p {
+            font-size: 16pt !important;
+        }
     }
 }
 </style>
