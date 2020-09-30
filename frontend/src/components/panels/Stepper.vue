@@ -166,6 +166,13 @@ export default {
             return `Step ${index + 1}`;
         },
         async sendReview() {
+            if (!UserData.id) {
+                EventBus.$emit("show-alert", {
+                    title: "Error",
+                    content: "You have to be logged in to post a review!",
+                });
+                return;
+            }
             this.review.user = UserData.id;
             this.review.recipe = this.recipeID;
             await axios.post("api/v1/reviews", this.review, {
