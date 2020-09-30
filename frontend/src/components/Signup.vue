@@ -1,5 +1,5 @@
 <template>
-    <div id="login">
+    <div id="login" v-on:keyup.enter="signup()">
         <p class="title">Sign up</p>
         <divider />
         <div class="content">
@@ -54,6 +54,7 @@
                     >I have an account already</a
                 >
                 <my-button text="Sign up" :click="signup" />
+                <Spinner v-if="loading" />
             </div>
         </div>
     </div>
@@ -64,6 +65,7 @@ import Divider from "./utils/Divider";
 import MyInput from "./utils/MyInput";
 import MyFileInput from "./utils/MyFileInput";
 import MyButton from "./utils/MyButton";
+import Spinner from "./utils/Spinner";
 import { setRoute } from "../services/methods.js";
 import UserData from "../services/user-data.js";
 import EventBus from "../services/event-bus.js";
@@ -72,7 +74,7 @@ const axios = require("axios");
 
 export default {
     name: "Signup",
-    components: { Divider, MyInput, MyButton, MyFileInput },
+    components: { Divider, MyInput, MyButton, MyFileInput, Spinner },
     data() {
         return {
             name: "",
@@ -82,6 +84,7 @@ export default {
             password: "",
             passwordConfirm: "",
             photo: null, //display
+            loading: false,
         };
     },
     methods: {
@@ -140,6 +143,7 @@ export default {
             reader.readAsDataURL(photo);
         },
         async signup() {
+            this.loading = true;
             if (
                 this.checkField(this.name, "name", 2) &&
                 this.checkField(this.surname, "surname", 2) &&
@@ -162,6 +166,7 @@ export default {
                         "api/v1/users/signup",
                         formData
                     );
+                    this.loading = false;
                     const user = response.data.data.user;
                     // this.clearInputs();
 
@@ -173,6 +178,7 @@ export default {
                     EventBus.$emit("update-user-data");
                     this.setRoute("recipes", {});
                 } catch (error) {
+                    this.loading = false;
                     if (error.response.status === 400) {
                         EventBus.$emit("show-alert", {
                             title: "Something went wrong...",
@@ -187,6 +193,7 @@ export default {
                     }
                 }
             }
+            this.loading = false;
         },
         clearInputs() {
             this.name = "";

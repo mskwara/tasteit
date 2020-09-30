@@ -1,5 +1,5 @@
 <template>
-    <div id="login">
+    <div id="login" v-on:keyup.enter="login()">
         <p class="title">Login</p>
         <divider />
         <div class="content">
@@ -21,6 +21,7 @@
                 >I don't have an account</a
             >
             <my-button text="Login" :click="login" />
+            <Spinner v-if="loading" />
         </div>
     </div>
 </template>
@@ -29,6 +30,7 @@
 import Divider from "./utils/Divider";
 import MyInput from "./utils/MyInput";
 import MyButton from "./utils/MyButton";
+import Spinner from "./utils/Spinner";
 import { setRoute } from "../services/methods.js";
 import UserData from "../services/user-data.js";
 import EventBus from "../services/event-bus.js";
@@ -36,22 +38,24 @@ const axios = require("axios");
 
 export default {
     name: "Login",
-    components: { Divider, MyInput, MyButton },
+    components: { Divider, MyInput, MyButton, Spinner },
     data() {
         return {
             email: "",
             password: "",
+            loading: false,
         };
     },
     methods: {
         setRoute,
         async login() {
             try {
+                this.loading = true;
                 const response = await axios.post("api/v1/users/login", {
                     email: this.email,
                     password: this.password,
                 });
-
+                this.loading = false;
                 const user = response.data.data.user;
                 // this.clearInputs();
 
@@ -67,6 +71,7 @@ export default {
                 });
                 this.setRoute("recipes", {});
             } catch (error) {
+                this.loading = false;
                 if (error.response.status === 401) {
                     EventBus.$emit("show-alert", {
                         title: "Something went wrong...",
