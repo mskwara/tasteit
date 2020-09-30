@@ -5,12 +5,14 @@
             <p class="title">{{ title }}</p>
             <divider />
             <p v-if="recipes.length == 0">There is no recipe yet!</p>
-            <recipe-tile
-                :key="recipe._id"
-                v-for="recipe in recipes"
-                :recipe="recipe"
-                :showFavourite="isLoggedIn"
-            />
+            <div class="recipes">
+                <recipe-tile
+                    :key="recipe._id"
+                    v-for="recipe in recipes"
+                    :recipe="recipe"
+                    :showFavourite="isLoggedIn"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -105,8 +107,14 @@ export default {
     text-align: center;
     margin-top: 60px;
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+
+    .recipes {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
 
     .title {
         font-size: 40pt;
