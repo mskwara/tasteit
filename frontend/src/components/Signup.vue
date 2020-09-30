@@ -100,7 +100,7 @@ export default {
                 // vm.photo = event.target.result;
                 const i = new Image();
                 i.onload = () => {
-                    console.log(i.width, i.height);
+                    // console.log(i.width, i.height);
 
                     if (i.height >= i.width) {
                         Clipper(event.target.result, function () {

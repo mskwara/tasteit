@@ -252,7 +252,7 @@ export default {
 @media only screen and (max-width: 1000px) {
     #sidebar {
         &.opened {
-            width: 90% !important;
+            width: 90vw;
         }
     }
 }

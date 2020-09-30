@@ -14,12 +14,12 @@ export default {
     components: {},
     data() {
         return {
-            sidebarOpened: false
+            sidebarOpened: false,
         };
     },
     methods: {
         switchSidebar() {
-            console.log("bla", this.sidebarOpened);
+            // console.log("bla", this.sidebarOpened);
 
             if (!this.sidebarOpened) {
                 EventBus.$emit("open-sidebar");
@@ -28,13 +28,13 @@ export default {
                 EventBus.$emit("close-sidebar");
                 this.sidebarOpened = false;
             }
-        }
+        },
     },
     mounted() {
         EventBus.$on("close-sidebar", () => {
             this.sidebarOpened = false;
         });
-    }
+    },
 };
 </script>
 

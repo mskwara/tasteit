@@ -5,7 +5,7 @@
             <divider />
         </div>
         <!-- DURING THE INSTRUCTIONS -->
-        <div class="content" v-if="step < steps.length">
+        <div class="content" v-if="!fullRecipe && step < steps.length">
             <div class="top" v-if="started()">
                 <div class="header" v-if="steps[step].optional == true">
                     Optional step
@@ -24,13 +24,10 @@
                 <counter :time="steps[step].time" v-if="steps[step].time" />
             </div>
             <div class="bottom">
-                <my-button
-                    text="Start"
-                    :click="start"
-                    class="button"
-                    v-if="!started()"
-                />
-
+                <span class="start-buttons" v-if="!started()">
+                    <my-button text="Start" :click="start" class="button" />
+                    <a @click="fullRecipe = true">View a full recipe</a>
+                </span>
                 <my-button
                     text="Previous"
                     class="button"
@@ -45,8 +42,32 @@
                 />
             </div>
         </div>
+        <div class="fullRecipe" v-if="fullRecipe">
+            <a @click="fullRecipe = false">View a stepper</a>
+            <div
+                class="step-container"
+                v-for="(step, index) in steps"
+                :key="step._id"
+            >
+                <div class="header" v-if="step.optional == true">
+                    Optional step
+                </div>
+                <step
+                    class="step"
+                    :content="step.before"
+                    header="Before you start..."
+                    v-if="step.before"
+                />
+                <step
+                    class="step"
+                    :content="step.content"
+                    :header="fullRecipeStep(index)"
+                />
+                <counter :time="step.time" v-if="step.time" />
+            </div>
+        </div>
         <!-- SENDING A REVIEW -->
-        <div class="content" v-else>
+        <div class="content" v-if="fullRecipe || step === steps.length">
             <div class="top">
                 <star-rating
                     class="rating"
@@ -116,6 +137,7 @@ export default {
                 content: "",
                 rating: null,
             },
+            fullRecipe: false,
         };
     },
     methods: {
@@ -139,6 +161,9 @@ export default {
         },
         makeStepHeader() {
             return `Step ${this.step + 1}`;
+        },
+        fullRecipeStep(index) {
+            return `Step ${index + 1}`;
         },
         async sendReview() {
             this.review.user = UserData.id;
@@ -186,6 +211,32 @@ export default {
             display: inline;
         }
     }
+    .fullRecipe {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        a {
+            color: $primary-200;
+            font-size: 10pt;
+            cursor: pointer;
+            align-self: flex-start;
+            margin-bottom: 30px;
+            margin-left: 40px;
+        }
+
+        .step-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .step {
+                margin-bottom: 50px;
+            }
+        }
+    }
     .content {
         display: flex;
         flex-direction: column;
@@ -198,7 +249,6 @@ export default {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%;
 
             .step {
                 margin-bottom: 50px;
@@ -229,6 +279,18 @@ export default {
             justify-content: space-around;
             width: 100%;
             margin-top: 50px;
+
+            .start-buttons {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+
+                a {
+                    color: $primary-200;
+                    font-size: 10pt;
+                    cursor: pointer;
+                }
+            }
         }
     }
     .item {

@@ -77,6 +77,9 @@
                 <my-button class="checkout" v-else text="Check out" />
             </div>
         </div>
+        <p class="image-information" v-if="!active">
+            The final cover image will perfectly fit the tile.
+        </p>
     </div>
 </template>
 
@@ -114,7 +117,7 @@ export default {
         };
     },
     mounted() {
-        console.log(this.recipe);
+        // console.log(this.recipe);
         this.getImageCover();
         this.getAvatarPath();
         if (
@@ -202,6 +205,15 @@ export default {
 @import "../../styles/styles.scss";
 #recipeTile {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .image-information {
+        font-size: 9pt;
+        margin-top: -40px;
+        color: rgb(158, 158, 158) !important;
+    }
 
     .favourite {
         width: 40px;

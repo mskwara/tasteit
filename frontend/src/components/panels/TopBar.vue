@@ -112,8 +112,14 @@ export default {
 
 @media only screen and (max-width: 1000px) {
     #topbar {
-        .sidebar-opened {
+        &.sidebar-opened {
             width: 10%;
+            .logo {
+                display: none;
+            }
+            .logout {
+                display: none;
+            }
         }
     }
 }
