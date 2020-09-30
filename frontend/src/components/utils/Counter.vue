@@ -5,7 +5,7 @@
             <div class="whitebg" :style="getProgress()" />
             <div class="blackbg" :style="getProgress()" />
             <div class="progress-bar" :style="getProgress()" />
-            <div class="timer">{{formatSecToTime(remaining)}}</div>
+            <div class="timer">{{ formatSecToTime(remaining) }}</div>
         </div>
     </div>
 </template>
@@ -23,14 +23,14 @@ export default {
         return {
             remaining: this.time,
             started: false,
-            interval: null
+            interval: null,
         };
     },
     destroyed() {
         clearInterval(this.interval);
     },
     mounted() {
-        EventBus.$on("other-step", time => {
+        EventBus.$on("other-step", (time) => {
             this.remaining = time;
             this.started = false;
             clearInterval(this.interval);
@@ -44,11 +44,13 @@ export default {
                 this.remaining--;
                 if (this.remaining == 0) {
                     clearInterval(this.interval);
+                    const audio = new Audio(require("../../assets/beep.mp3")); // path to file
+                    audio.play();
                     EventBus.$emit("show-alert", {
                         title: "Step finished",
                         content: `${this.formatSecToTime(
                             this.time
-                        )} have passed. You can go ahead to the next step.`
+                        )} have passed. You can go ahead to the next step.`,
                     });
                 }
             }, 1000);
@@ -57,8 +59,8 @@ export default {
             const percent = 100 - (this.remaining / this.time) * 100;
 
             return `width: ${percent}%`;
-        }
-    }
+        },
+    },
 };
 </script>
 

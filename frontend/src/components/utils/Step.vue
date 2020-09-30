@@ -8,14 +8,14 @@
 <script>
 export default {
     name: "App",
-    props: { content: String, header: String }
+    props: { content: String, header: String },
 };
 </script>
 
 <style scoped lang="scss">
 @import "../../styles/styles.scss";
 #step {
-    width: 90%;
+    width: 80%;
     height: auto;
     border: 1px solid rgb(228, 228, 228);
     padding: 20px;

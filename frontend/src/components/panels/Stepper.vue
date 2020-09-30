@@ -63,12 +63,12 @@
                     :content="step.content"
                     :header="fullRecipeStep(index)"
                 />
-                <counter :time="step.time" v-if="step.time" />
+                <counter :time="step.time" v-if="step.time" class="counter" />
             </div>
         </div>
         <!-- SENDING A REVIEW -->
         <div class="content" v-if="fullRecipe || step === steps.length">
-            <div class="top">
+            <div class="top review-top">
                 <star-rating
                     class="rating"
                     v-model="review.rating"
@@ -217,6 +217,18 @@ export default {
         align-items: center;
         width: 100%;
 
+        .header {
+            width: 200px;
+            height: 30px;
+            border: 1px solid rgb(201, 201, 201);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: $primary-300;
+            color: white;
+            margin-bottom: 5px;
+        }
+
         a {
             color: $primary-200;
             font-size: 10pt;
@@ -234,7 +246,13 @@ export default {
 
             .step {
                 margin-bottom: 50px;
+                margin-left: 10px;
+                margin-right: 10px;
             }
+        }
+        .counter {
+            width: 90%;
+            margin-bottom: 50px;
         }
     }
     .content {
@@ -245,10 +263,14 @@ export default {
         flex: 1;
 
         .top {
-            flex: 1;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
+
+            &.review-top {
+                width: auto;
+            }
 
             .step {
                 margin-bottom: 50px;
