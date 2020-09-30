@@ -7,17 +7,21 @@
             />
             <stepper class="stepper" :steps="recipe.steps" :active="false" />
         </div>
-        <my-button
-            class="apply-button"
-            text="Publish my recipe"
-            style="width: 80%"
-            :click="publish"
-        />
+        <span>
+            <my-button
+                class="apply-button"
+                text="Publish my recipe"
+                style="width: 80%"
+                :click="publish"
+            />
+            <Spinner v-if="loading" />
+        </span>
     </div>
 </template>
 
 <script>
 import MyButton from "../utils/MyButton";
+import Spinner from "../utils/Spinner";
 import Ingredients from "../panels/Ingredients";
 import Stepper from "../panels/Stepper";
 import {
@@ -35,6 +39,7 @@ export default {
         Ingredients,
         Stepper,
         MyButton,
+        Spinner,
     },
     props: {
         recipe: Object,
@@ -42,6 +47,7 @@ export default {
     data() {
         return {
             photo: null,
+            loading: false,
         };
     },
     mounted() {
@@ -78,6 +84,7 @@ export default {
                 return;
             }
             try {
+                this.loading = true;
                 let formData = new FormData();
                 formData.append("imageCover", this.photo);
                 formData.append(
@@ -102,6 +109,7 @@ export default {
                 await axios.post("api/v1/recipes", formData, {
                     withCredentials: true,
                 });
+                this.loading = false;
 
                 EventBus.$emit("show-alert", {
                     title: "Success",
@@ -109,12 +117,14 @@ export default {
                 });
                 setTimeout(() => this.setRoute("recipes", {}), 1000);
             } catch (error) {
+                this.loading = false;
                 EventBus.$emit("show-alert", {
                     title: "Something went wrong...",
                     content:
                         "There is a problem with the server... Please try again later!",
                 });
             }
+            this.loading = false;
         },
     },
 };
@@ -126,17 +136,22 @@ export default {
 #summary {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     padding-top: 20px;
     width: 100%;
     min-height: calc(100vh - 90px);
     // background-color: red;
-
-    .apply-button {
-        width: 60%;
-        margin-top: 40px;
-        align-self: center;
+    span {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        .apply-button {
+            width: 60%;
+            margin-top: 40px;
+            align-self: center;
+        }
     }
 
     .progress-title {

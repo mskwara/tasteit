@@ -40,7 +40,6 @@ export default {
         CreatorInfo,
         CreatorSteps,
         CreatorSummary,
-
         Divider,
         EditableText,
     },
