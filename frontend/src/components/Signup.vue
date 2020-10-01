@@ -1,6 +1,6 @@
 <template>
     <div id="login" v-on:keyup.enter="signup()">
-        <p class="title">Sign up</p>
+        <p class="title">{{ $t("signupTitle") }}</p>
         <divider />
         <div class="content">
             <div class="avatar-changer">
@@ -17,14 +17,14 @@
                 <my-input
                     type="text"
                     class="field"
-                    field="Name"
+                    :field="$t('name')"
                     width="80%"
                     v-model="name"
                 />
                 <my-input
                     type="text"
                     class="field"
-                    field="Surname"
+                    :field="$t('surname')"
                     width="80%"
                     v-model="surname"
                 />
@@ -39,21 +39,21 @@
                 <my-input
                     type="password"
                     class="field"
-                    field="Password"
+                    :field="$t('password')"
                     width="80%"
                     v-model="password"
                 />
                 <my-input
                     type="password"
                     class="field"
-                    field="Confirm your password"
+                    :field="$t('passwordConfirm')"
                     width="80%"
                     v-model="passwordConfirm"
                 />
-                <a class="no-account" @click="setRoute('login', {})"
-                    >I have an account already</a
-                >
-                <my-button text="Sign up" :click="signup" />
+                <a class="no-account" @click="setRoute('login', {})">{{
+                    $t("iHaveAccount")
+                }}</a>
+                <my-button :text="$t('signup')" :click="signup" />
                 <Spinner v-if="loading" />
             </div>
         </div>
@@ -181,14 +181,13 @@ export default {
                     this.loading = false;
                     if (error.response.status === 400) {
                         EventBus.$emit("show-alert", {
-                            title: "Something went wrong...",
-                            content: "Please provide valid data!",
+                            title: this.$t("alertTitle1"),
+                            content: this.$t("alertContent4"),
                         });
                     } else if (error.response.status === 500) {
                         EventBus.$emit("show-alert", {
-                            title: "Something went wrong...",
-                            content:
-                                "There is a problem with the server... Please try to sign up later!",
+                            title: this.$t("alertTitle1"),
+                            content: this.$t("alertContent5"),
                         });
                     }
                 }
@@ -205,8 +204,17 @@ export default {
         checkField(field, fieldname, minlen) {
             if (field.length < minlen) {
                 EventBus.$emit("show-alert", {
-                    title: "Something went wrong...",
-                    content: `The field "${fieldname}" must have more or equal ${minlen} characters!`,
+                    title: this.$t("alertTitle1"),
+                    content:
+                        this.$t("alertContent6p1") +
+                        " " +
+                        fieldname +
+                        " " +
+                        this.$t("alertContent6p2") +
+                        " " +
+                        minlen +
+                        " " +
+                        this.$t("alertContent6p3"),
                 });
                 return false;
             }

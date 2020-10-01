@@ -1,19 +1,21 @@
 <template>
     <div id="stepper">
         <div class="title">
-            <p style="font-size: 25pt">RECIPE</p>
+            <p style="font-size: 25pt; text-transform: uppercase">
+                {{ $t("recipe") }}
+            </p>
             <divider />
         </div>
         <!-- DURING THE INSTRUCTIONS -->
         <div class="content" v-if="!fullRecipe && step < steps.length">
             <div class="top" v-if="started()">
                 <div class="header" v-if="steps[step].optional == true">
-                    Optional step
+                    {{ $t("optionalStep") }}
                 </div>
                 <step
                     class="step"
                     :content="steps[step].before"
-                    header="Before you start..."
+                    :header="$t('beforeStart') + '...'"
                     v-if="steps[step].before"
                 />
                 <step
@@ -26,16 +28,16 @@
             <div class="bottom">
                 <span class="start-buttons" v-if="!started()">
                     <my-button text="Start" :click="start" class="button" />
-                    <a @click="fullRecipe = true">View a full recipe</a>
+                    <a @click="fullRecipe = true">{{ $t("viewFullRecipe") }}</a>
                 </span>
                 <my-button
-                    text="Previous"
+                    :text="$t('previous')"
                     class="button"
                     :click="back"
                     v-if="started()"
                 />
                 <my-button
-                    :text="step < steps.length - 1 ? 'Next' : 'Finish'"
+                    :text="step < steps.length - 1 ? $t('next') : $t('finish')"
                     :click="next"
                     class="button"
                     v-if="started()"
@@ -43,19 +45,19 @@
             </div>
         </div>
         <div class="fullRecipe" v-if="fullRecipe">
-            <a @click="fullRecipe = false">View a stepper</a>
+            <a @click="fullRecipe = false">{{ $t("viewStepper") }}</a>
             <div
                 class="step-container"
                 v-for="(step, index) in steps"
                 :key="step._id"
             >
                 <div class="header" v-if="step.optional == true">
-                    Optional step
+                    {{ $t("optionalStep") }}
                 </div>
                 <step
                     class="step"
                     :content="step.before"
-                    header="Before you start..."
+                    :header="$t('beforeStart') + '...'"
                     v-if="step.before"
                 />
                 <step
@@ -80,20 +82,20 @@
                     :rows="5"
                     :cols="100"
                     :maxlen="600"
-                    field="Write a short review..."
+                    :field="$t('writeAReview')"
                     v-model="review.content"
                 />
             </div>
             <div class="bottom">
                 <my-button
-                    text="Send a review"
+                    :text="$t('sendAReview')"
                     :click="sendReview"
                     class="button"
                     v-if="active"
                     :disabled="review.content == '' || review.rating == null"
                 />
                 <my-button
-                    text="Send a review"
+                    :text="$t('sendAReview')"
                     class="button"
                     :disabled="true"
                     v-else
@@ -160,16 +162,16 @@ export default {
             return this.step >= 0 ? true : false;
         },
         makeStepHeader() {
-            return `Step ${this.step + 1}`;
+            return `${this.$t("step")} ${this.step + 1}`;
         },
         fullRecipeStep(index) {
-            return `Step ${index + 1}`;
+            return `${this.$t("step")} ${index + 1}`;
         },
         async sendReview() {
             if (!UserData.id) {
                 EventBus.$emit("show-alert", {
-                    title: "Error",
-                    content: "You have to be logged in to post a review!",
+                    title: this.$t("alertTitle2"),
+                    content: this.$t("alertContent7"),
                 });
                 return;
             }
@@ -179,8 +181,8 @@ export default {
                 withCredentials: true,
             });
             EventBus.$emit("show-alert", {
-                title: "Excellent!",
-                content: "Your review has been posted below this recipe!",
+                title: this.$t("alertTitle3"),
+                content: this.$t("alertContent8"),
             });
             this.review.user = "";
             this.review.recipe = "";

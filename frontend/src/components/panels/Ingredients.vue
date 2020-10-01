@@ -1,7 +1,9 @@
 <template>
     <div id="ingredients">
         <div class="title">
-            <p style="font-size: 18pt">INGREDIENTS</p>
+            <p style="font-size: 18pt; text-transform: uppercase">
+                {{ $t("ingredients") }}
+            </p>
             <p style="font-size: 12pt" v-if="portion != null">
                 / {{ portion }}
             </p>
@@ -10,7 +12,7 @@
             <divider />
             <div class="item" v-for="item in ingredients" :key="item._id">
                 {{ item.name }}
-                <span v-if="item.optional">(optional)</span>
+                <span v-if="item.optional">({{ $t("optional") }})</span>
                 <div class="delete" v-if="removeIngredient">
                     <img
                         src="../../assets/delete.png"

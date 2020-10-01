@@ -1,7 +1,7 @@
 <template>
     <div id="ingredients">
         <div class="title">
-            <p style="font-size: 18pt">Steps</p>
+            <p style="font-size: 18pt">{{ $t("steps") }}</p>
         </div>
         <div class="content">
             <divider />

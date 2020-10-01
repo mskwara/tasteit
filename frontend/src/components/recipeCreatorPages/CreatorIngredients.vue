@@ -6,17 +6,17 @@
             :removeIngredient="removeIngredient"
         />
         <div class="ingredients-creator">
-            <p class="progress-title">Specify the ingredients</p>
+            <p class="progress-title">{{ $t("specifyIngredients") }}</p>
             <span>
                 <my-input
                     type="text"
-                    field="Ingredient"
-                    hint="Point out the ingredient and amount"
+                    :field="$t('ingredient')"
+                    :hint="$t('ingredientHint')"
                     width="80%"
                     v-model="ingredient.name"
                 />
                 <span class="toggle-span">
-                    <p class="toggle-title">Optional</p>
+                    <p class="toggle-title">{{ $t("optional") }}</p>
                     <my-toggle
                         v-model="ingredient.optional"
                         :value="ingredient.optional"
@@ -24,7 +24,7 @@
                 </span>
                 <my-button
                     class="small-button"
-                    text="Add"
+                    :text="$t('add')"
                     style="width: 30%"
                     :click="addIngredient"
                     :disabled="ingredient.name == ''"
@@ -34,13 +34,13 @@
                 <my-input
                     style="margin-right: 40px"
                     type="text"
-                    field="Number of servings"
-                    hint="Eg. for 2 people / 5 pieces / 2 liters of juice"
+                    :field="$t('numberOfServings')"
+                    :hint="$t('servingHint')"
                     width="80%"
                     v-model="portions"
                 />
                 <my-button
-                    text="Set"
+                    :text="$t('set')"
                     style="width: 30%"
                     :click="setPortions"
                     :disabled="portions == ''"
@@ -49,7 +49,7 @@
             </span>
             <my-button
                 class="apply-button"
-                text="Apply the ingredients"
+                :text="$t('applyIngredients')"
                 :click="applyIngredients"
             />
         </div>

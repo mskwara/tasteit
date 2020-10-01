@@ -18,14 +18,14 @@
                 <my-input
                     type="text"
                     class="field"
-                    field="Name"
+                    :field="$t('name')"
                     width="80%"
                     v-model="user.name"
                 />
                 <my-input
                     type="text"
                     class="field"
-                    field="Surname"
+                    :field="$t('surname')"
                     width="80%"
                     v-model="user.surname"
                 />
@@ -37,7 +37,7 @@
                     v-model="user.email"
                 />
 
-                <my-button text="Save" :click="save" />
+                <my-button :text="$t('save')" :click="save" />
                 <Spinner v-if="data_loading" />
             </div>
         </div>
@@ -153,7 +153,7 @@ export default {
 
             EventBus.$emit("update-user-data");
             EventBus.$emit("show-pop-alert", {
-                content: `New photo has been uploaded!`,
+                content: ``,
             });
         },
         async save() {
@@ -184,7 +184,7 @@ export default {
             this.data_loading = false;
             EventBus.$emit("update-user-data");
             EventBus.$emit("show-pop-alert", {
-                content: `Your profile has been updated!`,
+                content: `${this.$t("pop3")}`,
             });
         },
     },

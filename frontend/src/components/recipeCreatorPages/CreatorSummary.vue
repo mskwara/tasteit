@@ -10,7 +10,7 @@
         <span>
             <my-button
                 class="apply-button"
-                text="Publish my recipe"
+                :text="$t('publish')"
                 style="width: 80%"
                 :click="publish"
             />
@@ -78,8 +78,8 @@ export default {
             }
             if (this.recipe.steps.length == 0) {
                 EventBus.$emit("show-alert", {
-                    title: "Unspecified steps...",
-                    content: "Please create steps to publish this recipe.",
+                    title: this.$t("alertTitle5"),
+                    content: this.$t("alertContent10"),
                 });
                 return;
             }
@@ -112,16 +112,15 @@ export default {
                 this.loading = false;
 
                 EventBus.$emit("show-alert", {
-                    title: "Success",
-                    content: "Your recipe has been created!",
+                    title: this.$t("alertTitle6"),
+                    content: this.$t("alertContent11"),
                 });
                 setTimeout(() => this.setRoute("recipes", {}), 1000);
             } catch (error) {
                 this.loading = false;
                 EventBus.$emit("show-alert", {
-                    title: "Something went wrong...",
-                    content:
-                        "There is a problem with the server... Please try again later!",
+                    title: this.$t("alertTitle1"),
+                    content: this.$t("alertContent12"),
                 });
             }
             this.loading = false;

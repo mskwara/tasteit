@@ -25,16 +25,16 @@ export default {
     components: { MyButton, Logo, Hamburger },
     data() {
         return {
-            btnText: UserData.id != null ? "Logout" : "Login",
+            btnText: UserData.id != null ? this.$t("logout") : this.$t("login"),
             sidebarStatus: "sidebar-closed",
         };
     },
     mounted() {
         EventBus.$on("update-user-data", () => {
             if (UserData.id != null) {
-                this.btnText = "Logout";
+                this.btnText = this.$t("logout");
             } else {
-                this.btnText = "Login";
+                this.btnText = this.$t("login");
             }
         });
 
@@ -44,6 +44,13 @@ export default {
 
         EventBus.$on("close-sidebar", () => {
             this.sidebarStatus = "sidebar-closed";
+        });
+        EventBus.$on("change-language", () => {
+            if (UserData.id != null) {
+                this.btnText = this.$t("logout");
+            } else {
+                this.btnText = this.$t("login");
+            }
         });
     },
     methods: {
@@ -57,15 +64,16 @@ export default {
             }
         },
         async login_logout() {
-            if (this.btnText === "Login") {
+            if (UserData.id === null) {
                 this.setRoute("login", {});
             } else {
                 await axios.post("api/v1/users/logout");
                 this.clearUserData(UserData);
                 this.filterRecipes({});
+                this.setRoute("recipes", {});
                 EventBus.$emit("update-user-data");
                 EventBus.$emit("show-pop-alert", {
-                    content: `You have been logged out!`,
+                    content: `${this.$t("pop6")}`,
                 });
             }
         },

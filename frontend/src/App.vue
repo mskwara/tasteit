@@ -24,6 +24,7 @@ import Sidebar from "./components/panels/Sidebar";
 import EventBus from "./services/event-bus.js";
 import UserData from "./services/user-data.js";
 const axios = require("axios");
+import i18n from "@/plugins/i18n";
 
 export default {
     name: "App",
@@ -32,11 +33,16 @@ export default {
         return {
             sidebarStatus: "sidebar-closed",
             UserData,
-            loading: true,
+            loading: true
         };
     },
 
     async mounted() {
+        if (this.$cookie.get("language") === "en") {
+            i18n.locale = "en";
+        } else if (this.$cookie.get("language") === "pl") {
+            i18n.locale = "pl";
+        }
         const response = await axios.get("api/v1/users/isloggedin");
 
         const user = response.data.data.user;
@@ -48,7 +54,7 @@ export default {
             UserData.avatar = user.avatar;
             UserData.favourites = user.favourites;
             EventBus.$emit("show-pop-alert", {
-                content: `Nice to see you again, ${user.name}!`,
+                content: `${this.$t("pop1")}, ${user.name}!`
             });
         } else {
             UserData.id = null;
@@ -64,7 +70,7 @@ export default {
         EventBus.$on("close-sidebar", () => {
             this.sidebarStatus = "sidebar-closed";
         });
-    },
+    }
 };
 </script>
 

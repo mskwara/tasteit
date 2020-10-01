@@ -8,18 +8,20 @@
             <div class="menu" v-if="user.id != null">
                 <my-button
                     class="button"
-                    text="Create a new recipe"
+                    :text="$t('createANewRecipe')"
                     type="full"
                     :click="setRouteWrap.bind(null, 'recipecreator', {})"
                 />
-                <div class="link" @click="filterRecipes({})">Home</div>
+                <div class="link" @click="filterRecipes({})">
+                    {{ $t("home") }}
+                </div>
                 <div
                     class="link"
                     @click="
                         filterRecipes({ type: 'byUser', userId: UserData.id })
                     "
                 >
-                    My recipes
+                    {{ $t("myRecipes") }}
                 </div>
                 <div
                     class="link"
@@ -30,24 +32,32 @@
                         })
                     "
                 >
-                    Favourites
+                    {{ $t("favourites") }}
                 </div>
                 <div class="link" @click="setRouteWrap('profile', {})">
-                    My profile
+                    {{ $t("myProfile") }}
                 </div>
-                <div class="link" @click="logout()">Logout</div>
+                <div class="link" @click="changeLanguage()">
+                    {{ $t("changeLanguage") }}
+                </div>
+                <div class="link" @click="logout()">{{ $t("logout") }}</div>
             </div>
             <div class="menu" style="margin-top: 20px" v-else>
                 <my-button
                     class="button"
-                    text="Sign up"
+                    :text="$t('signup')"
                     type="full"
                     :click="setRouteWrap.bind(null, 'signup', {})"
                 />
                 <div class="link" @click="setRouteWrap('recipes', {})">
-                    Recipes
+                    {{ $t("recipes") }}
                 </div>
-                <div class="link" @click="setRouteWrap('login', {})">Login</div>
+                <div class="link" @click="changeLanguage()">
+                    {{ $t("changeLanguage") }}
+                </div>
+                <div class="link" @click="setRouteWrap('login', {})">
+                    {{ $t("login") }}
+                </div>
             </div>
             <div class="footer">
                 <p>{{ footer }}</p>
@@ -67,6 +77,7 @@ import {
     getPhotoFromAWS,
 } from "../../services/methods";
 const axios = require("axios");
+import i18n from "@/plugins/i18n";
 
 export default {
     name: "App",
@@ -100,6 +111,7 @@ export default {
         async logout() {
             await axios.post("api/v1/users/logout");
             this.clearUserData(UserData);
+            this.setRoute("recipes", {});
             EventBus.$emit("update-user-data");
             EventBus.$emit("close-sidebar");
         },
@@ -110,6 +122,16 @@ export default {
                 EventBus.$emit("filter-recipes", filter);
             }
             EventBus.$emit("close-sidebar");
+        },
+        changeLanguage() {
+            if (i18n.locale === "en") {
+                i18n.locale = "pl";
+                this.$cookie.set("language", "pl");
+            } else if (i18n.locale === "pl") {
+                i18n.locale = "en";
+                this.$cookie.set("language", "en");
+            }
+            EventBus.$emit("change-language");
         },
     },
     async updated() {
@@ -209,7 +231,7 @@ export default {
             align-items: center;
             cursor: pointer;
             text-decoration: none;
-            // text-transform: uppercase;
+            text-transform: capitalize;
 
             transition: 0.5s;
             &:hover {

@@ -46,7 +46,7 @@ export default {
     data() {
         return {
             recipe: {
-                name: "Untitled",
+                name: this.$t("untitled"),
                 preparationTime: null,
                 difficulty: "",
                 shortDescription: "",

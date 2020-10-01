@@ -30,15 +30,52 @@ export default {
     components: {
         RecipeTile,
         Spinner,
-        Divider,
+        Divider
     },
     data() {
         return {
             recipes: Array,
             loading: true,
             isLoggedIn: null,
-            title: "Recipes",
+            title: this.$t("recipes"),
+            currentFilter: null
         };
+    },
+    methods: {
+        async filterByUser(userId) {
+            // filter by userId
+            const response = await axios.get(`api/v1/recipes/user/${userId}`);
+            this.recipes = response.data.data.recipes;
+            if (this.$i18n.locale === "en") {
+                this.title =
+                    response.data.user.name +
+                    " " +
+                    response.data.user.surname +
+                    "'s " +
+                    this.$t("recipes");
+            } else if (this.$i18n.locale === "pl") {
+                this.title =
+                    response.data.user.name +
+                    " " +
+                    response.data.user.surname +
+                    " - " +
+                    this.$t("recipes");
+            }
+        },
+        async filterByFavourites(userId) {
+            // filter by favourites
+            const response = await axios.get(
+                `api/v1/recipes/favourites/user/${userId}`
+            );
+            this.recipes = response.data.data.recipes;
+            this.title = this.$t("favourites");
+        },
+        async withoutFilter() {
+            // default recipes without a filter
+            const response = await axios.get(`api/v1/recipes`);
+            this.recipes = response.data.data.recipes;
+            this.title = this.$t("recipes");
+        }
     },
     async mounted() {
         try {
@@ -61,32 +98,15 @@ export default {
             console.error(error);
         }
 
-        EventBus.$on("filter-recipes", async (filter) => {
+        EventBus.$on("filter-recipes", async filter => {
+            this.currentFilter = filter;
             this.loading = true;
-            let response;
             if (filter.type === "byUser") {
-                // filter by userId
-                response = await axios.get(
-                    `api/v1/recipes/user/${filter.userId}`
-                );
-                this.recipes = response.data.data.recipes;
-                this.title =
-                    response.data.user.name +
-                    " " +
-                    response.data.user.surname +
-                    "'s recipes";
+                this.filterByUser(filter.userId);
             } else if (filter.type === "byFavourites") {
-                // filter by favourites
-                response = await axios.get(
-                    `api/v1/recipes/favourites/user/${filter.userId}`
-                );
-                this.recipes = response.data.data.recipes;
-                this.title = "Favourites";
+                this.filterByFavourites(filter.userId);
             } else {
-                // default recipes without a filter
-                response = await axios.get(`api/v1/recipes`);
-                this.recipes = response.data.data.recipes;
-                this.title = "Recipes";
+                this.withoutFilter();
             }
             this.loading = false;
         });
@@ -98,7 +118,17 @@ export default {
                 this.isLoggedIn = true;
             }
         });
-    },
+
+        EventBus.$on("change-language", () => {
+            if (this.currentFilter === null) {
+                this.withoutFilter();
+            } else if (this.currentFilter.type === "byUser") {
+                this.filterByUser(this.currentFilter.userId);
+            } else if (this.currentFilter.type === "byFavourites") {
+                this.filterByFavourites(this.currentFilter.userId);
+            }
+        });
+    }
 };
 </script>
 

@@ -43,20 +43,20 @@ export function validateIngredients(recipe) {
     if (recipe.name.length == 0 || recipe.name === "Untitled") {
         result.status = "fail";
         result.error = {
-            title: "Recipe is untitled...",
-            content: "Please provide recipe's title by clicking it."
+            title: this.$t("validateTitle1"),
+            content: this.$t("validateContent1")
         };
     } else if (recipe.ingredients.length == 0) {
         result.status = "fail";
         result.error = {
-            title: "Empty ingredients list",
-            content: "Please add necessary ingredients."
+            title: this.$t("validateTitle2"),
+            content: this.$t("validateContent2")
         };
     } else if (recipe.portion === "") {
         result.status = "fail";
         result.error = {
-            title: "Unspecified number of servings",
-            content: "Please set amount of portions."
+            title: this.$t("validateTitle3"),
+            content: this.$t("validateContent3")
         };
     }
     return result;
@@ -70,8 +70,8 @@ export function validateInfo(recipe) {
     if (recipe.shortDescription.length == 0) {
         result.status = "fail";
         result.error = {
-            title: "The description is empty",
-            content: "Please provide recipe's description."
+            title: this.$t("validateTitle4"),
+            content: this.$t("validateContent4")
         };
     } else if (
         recipe.preparationTime === null ||
@@ -80,14 +80,14 @@ export function validateInfo(recipe) {
     ) {
         result.status = "fail";
         result.error = {
-            title: "Invalid preparation time",
-            content: "Please specify preparation time as number of minutes."
+            title: this.$t("validateTitle5"),
+            content: this.$t("validateContent5")
         };
     } else if (recipe.difficulty === "" || recipe.difficulty === "none") {
         result.status = "fail";
         result.error = {
-            title: "Unspecified recipe's difficulty",
-            content: "Please select recipe's difficulty."
+            title: this.$t("validateTitle6"),
+            content: this.$t("validateContent6")
         };
     }
     return result;

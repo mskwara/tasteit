@@ -7,9 +7,11 @@
         />
 
         <div class="current-step">
-            <p class="progress-title" style="margin-bottom: 0">Stepper</p>
+            <p class="progress-title" style="margin-bottom: 0">
+                {{ $t("stepper") }}
+            </p>
             <span class="toggle-span">
-                <p class="toggle-title">Before you start this step</p>
+                <p class="toggle-title">{{ $t("beforeStart") }}</p>
                 <my-toggle v-model="stepPartsVisible.before" />
             </span>
             <my-text-area
@@ -17,8 +19,8 @@
                 :rows="3"
                 :cols="100"
                 :maxlen="240"
-                field="Specify necessary preparations for this step..."
-                hint="Eg. Prepare two big bowls and connect a mixer to the power supply."
+                :field="$t('beforeStartInput') + '...'"
+                :hint="$t('beforeStartHint')"
                 v-model="step.before"
                 v-if="stepPartsVisible.before"
             />
@@ -27,30 +29,30 @@
                 :rows="5"
                 :cols="100"
                 :maxlen="240"
-                field="Write a instruction for this step..."
+                :field="$t('writeInstruction') + '...'"
                 v-model="step.content"
             />
             <span class="toggle-span">
-                <p class="toggle-title">Countdown timer</p>
+                <p class="toggle-title">{{ $t("countdownTimer") }}</p>
                 <my-toggle v-model="stepPartsVisible.time" />
             </span>
             <my-input
                 type="text"
-                field="Duration time in minutes"
+                :field="$t('durationTime')"
                 style="margin-bottom: 20px"
-                hint="Specify if there is a break between current and next step(eg. baking in the oven)"
+                :hint="$t('countdownHint')"
                 width="100%"
                 :maxlen="5"
                 v-model="step.time"
                 v-if="stepPartsVisible.time"
             />
             <span class="toggle-span">
-                <p class="toggle-title">Is this step optional?</p>
+                <p class="toggle-title">{{ $t("isStepOptional") }}</p>
                 <my-toggle v-model="step.optional" />
             </span>
 
             <my-button
-                text="Add this step"
+                :text="$t('addStep')"
                 style="width: 40%"
                 :click="addStep"
                 :disabled="step.content.length <= 5"
@@ -58,7 +60,7 @@
             />
             <my-button
                 class="apply-button"
-                text="Summary"
+                :text="$t('summary')"
                 :click="goToSummary"
                 :disabled="recipe.steps.length == 0"
             />
@@ -108,9 +110,8 @@ export default {
                 /^\d+$/.test(this.step.time) === false
             ) {
                 EventBus.$emit("show-alert", {
-                    title: "Invalid duration time",
-                    content:
-                        "Please specify duration time as number of minutes.",
+                    title: this.$t("alertTitle4"),
+                    content: this.$t("alertContent9"),
                 });
                 return;
             }

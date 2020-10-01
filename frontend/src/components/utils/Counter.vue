@@ -1,6 +1,6 @@
 <template>
     <div id="counter">
-        <my-button text="Countdown" :click="start" :disabled="started" />
+        <my-button :text="$t('countdown')" :click="start" :disabled="started" />
         <div class="outside">
             <div class="whitebg" :style="getProgress()" />
             <div class="blackbg" :style="getProgress()" />
@@ -47,10 +47,10 @@ export default {
                     const audio = new Audio(require("../../assets/beep.mp3")); // path to file
                     audio.play();
                     EventBus.$emit("show-alert", {
-                        title: "Step finished",
-                        content: `${this.formatSecToTime(
-                            this.time
-                        )} have passed. You can go ahead to the next step.`,
+                        title: this.$t("alertTitle7"),
+                        content:
+                            `${this.formatSecToTime(this.time)} ` +
+                            this.$t("alertContent13"),
                     });
                 }
             }, 1000);

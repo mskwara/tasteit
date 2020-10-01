@@ -1,6 +1,6 @@
 <template>
     <div id="login" v-on:keyup.enter="login()">
-        <p class="title">Login</p>
+        <p class="title">{{ $t("loginTitle") }}</p>
         <divider />
         <div class="content">
             <my-input
@@ -13,14 +13,14 @@
             <my-input
                 class="field"
                 type="password"
-                field="Password"
+                :field="$t('password')"
                 width="80%"
                 v-model="password"
             />
-            <a class="no-account" @click="setRoute('signup', {})"
-                >I don't have an account</a
-            >
-            <my-button text="Login" :click="login" />
+            <a class="no-account" @click="setRoute('signup', {})">{{
+                $t("iDontHaveAccount")
+            }}</a>
+            <my-button :text="$t('login')" :click="login" />
             <Spinner v-if="loading" />
         </div>
     </div>
@@ -67,26 +67,25 @@ export default {
                 UserData.favourites = user.favourites;
                 EventBus.$emit("update-user-data");
                 EventBus.$emit("show-pop-alert", {
-                    content: `Nice to see you again, ${user.name}!`,
+                    content: `${this.$t("pop1")}, ${user.name}!`,
                 });
                 this.setRoute("recipes", {});
             } catch (error) {
                 this.loading = false;
                 if (error.response.status === 401) {
                     EventBus.$emit("show-alert", {
-                        title: "Something went wrong...",
-                        content: "Invalid email or password!",
+                        title: this.$t("alertTitle1"),
+                        content: this.$t("alertContent1"),
                     });
                 } else if (error.response.status === 400) {
                     EventBus.$emit("show-alert", {
-                        title: "Something went wrong...",
-                        content: "Please fill empty fields!",
+                        title: this.$t("alertTitle1"),
+                        content: this.$t("alertContent2"),
                     });
                 } else {
                     EventBus.$emit("show-alert", {
-                        title: "Something went wrong...",
-                        content:
-                            "There is a problem with the server... Please try to login later!",
+                        title: this.$t("alertTitle1"),
+                        content: this.$t("alertContent3"),
                     });
                 }
             }

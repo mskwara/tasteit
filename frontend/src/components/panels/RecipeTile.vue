@@ -33,7 +33,7 @@
                     </div>
                     <div class="icon">
                         <img src="../../assets/difficulty.svg" />
-                        <p>{{ recipe.difficulty }}</p>
+                        <p>{{ $t(recipe.difficulty) }}</p>
                     </div>
                 </div>
             </div>
@@ -69,16 +69,16 @@
                 <my-button
                     class="checkout"
                     v-if="active"
-                    text="Check out"
+                    :text="$t('checkOut')"
                     :click="
                         setRoute.bind(null, `recipe`, { id: this.recipe._id })
                     "
                 />
-                <my-button class="checkout" v-else text="Check out" />
+                <my-button class="checkout" v-else :text="$t('checkOut')" />
             </div>
         </div>
         <p class="image-information" v-if="!active">
-            The final cover image will perfectly fit the tile.
+            {{ $t("theFinalWillFit") }}
         </p>
     </div>
 </template>
@@ -179,7 +179,7 @@ export default {
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = true;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been added to your favourites!`,
+                    content: `${this.recipe.name} ${this.$t("pop4")}`,
                 });
             } else {
                 // wykasowanie z ulubionych
@@ -193,7 +193,7 @@ export default {
                     response.data.data.updatedUser.favourites;
                 this.isFavourite = false;
                 EventBus.$emit("show-pop-alert", {
-                    content: `${this.recipe.name} has been removed from your favourites!`,
+                    content: `${this.recipe.name} ${this.$t("pop5")}`,
                 });
             }
         },

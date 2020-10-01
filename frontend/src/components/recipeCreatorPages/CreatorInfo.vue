@@ -4,13 +4,13 @@
             <recipe-tile :recipe="recipe" :photo="photo" :active="false" />
         </div>
         <div class="recipe-info">
-            <p class="progress-title">Provide essential information</p>
+            <p class="progress-title">{{ $t("provideInfo") }}</p>
             <my-text-area
                 :rows="5"
                 :cols="100"
                 :maxlen="240"
-                field="Write a short description..."
-                hint="It will be visible in the recipes list"
+                :field="$t('writeDescription') + '...'"
+                :hint="$t('descriptionHint')"
                 v-model="recipe.shortDescription"
             />
             <my-file-input
@@ -22,7 +22,7 @@
             <my-input
                 type="text"
                 style="margin-top: 40px"
-                field="Preparation time in minutes"
+                :field="$t('preparationTime')"
                 width="100%"
                 :maxlen="3"
                 v-model="recipe.preparationTime"
@@ -30,12 +30,12 @@
             <my-select
                 style="margin-top: 30px"
                 :options="difficulties"
-                title="Select recipe's difficulty"
+                :title="$t('selectDifficulty')"
                 v-model="recipe.difficulty"
             />
             <my-button
                 class="apply-button"
-                text="Apply the description"
+                :text="$t('applyDescription')"
                 :click="applyInfo"
             />
         </div>

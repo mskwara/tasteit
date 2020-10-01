@@ -1,10 +1,17 @@
 <template>
     <div id="my-file-input" :style="getWidth()">
         <label for="file">
-            <my-button text="Upload image" />
-            <span id="file-name" class="file-box" v-if="showFilename">{{filename}}</span>
+            <my-button :text="$t('uploadImage')" />
+            <span id="file-name" class="file-box" v-if="showFilename">{{
+                filename
+            }}</span>
         </label>
-        <input @change="uploadFile($event)" id="file" type="file" :style="inputstyle" />
+        <input
+            @change="uploadFile($event)"
+            id="file"
+            type="file"
+            :style="inputstyle"
+        />
     </div>
 </template>
 
@@ -20,13 +27,13 @@ export default {
         inputstyle: String,
         showFilename: {
             type: Boolean,
-            default: true
-        }
+            default: true,
+        },
     },
     data() {
         return {
             filename: "",
-            photo: null
+            photo: null,
         };
     },
     methods: {
@@ -39,8 +46,8 @@ export default {
             this.photo = files[0];
             this.$emit("photo-change", this.photo);
             this.filename = document.getElementById("file").files[0].name;
-        }
-    }
+        },
+    },
 };
 </script>
 

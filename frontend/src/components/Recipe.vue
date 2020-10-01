@@ -33,7 +33,7 @@
             class="reviews"
             v-if="recipe.reviews != null && recipe.reviews.length > 0"
         >
-            <p class="title">REVIEWS</p>
+            <p class="title">{{ $t("reviews") }}</p>
             <review
                 v-for="review in recipe.reviews"
                 :key="review._id"

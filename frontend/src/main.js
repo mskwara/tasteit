@@ -7,6 +7,10 @@ import Recipe from "./components/Recipe.vue";
 import Profile from "./components/Profile.vue";
 import Login from "./components/Login.vue";
 import Signup from "./components/Signup.vue";
+import i18n from "@/plugins/i18n";
+var VueCookie = require("vue-cookie");
+
+Vue.use(VueCookie);
 
 Vue.use(VueRouter);
 
@@ -40,6 +44,7 @@ const router = new VueRouter({
 });
 
 new Vue({
+    i18n,
     render: h => h(App),
     router
 }).$mount("#app");
