@@ -2,13 +2,21 @@
     <div id="ingredients">
         <div class="title">
             <p style="font-size: 18pt">INGREDIENTS</p>
-            <p style="font-size: 12pt" v-if="portion != null">/ {{ portion }}</p>
+            <p style="font-size: 12pt" v-if="portion != null">
+                / {{ portion }}
+            </p>
         </div>
         <div class="content">
             <divider />
             <div class="item" v-for="item in ingredients" :key="item._id">
                 {{ item.name }}
                 <span v-if="item.optional">(optional)</span>
+                <div class="delete" v-if="removeIngredient">
+                    <img
+                        src="../../assets/delete.png"
+                        @click="removeIngredient(item)"
+                    />
+                </div>
             </div>
         </div>
     </div>
@@ -20,7 +28,7 @@ import Divider from "../utils/Divider";
 export default {
     name: "Ingredients",
     components: { Divider },
-    props: { ingredients: Array, portion: String }
+    props: { ingredients: Array, portion: String, removeIngredient: Function },
 };
 </script>
 
@@ -53,6 +61,15 @@ export default {
         width: 90%;
         padding: 8px 10px;
         border-bottom: 1px solid rgb(236, 236, 236);
+
+        .delete {
+            img {
+                width: 10px;
+                height: 10px;
+            }
+            float: right;
+            cursor: pointer;
+        }
 
         &:last-child {
             border: 0;

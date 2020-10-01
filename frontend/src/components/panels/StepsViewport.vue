@@ -6,19 +6,25 @@
         <div class="content">
             <divider />
             <div class="item" v-for="(item, index) in steps" :key="item._id">
-                <p
-                    class="cut-version"
-                >{{ index+1 }}. {{getCutVersion(item.content)}} {{item.optional ? '(optional)' : ''}}</p>
+                <p class="cut-version">
+                    {{ index + 1 }}. {{ getCutVersion(item.content) }}
+                    {{ item.optional ? "(optional)" : "" }}
+                </p>
                 <div class="options">
                     <div class="icon" v-if="item.time">
                         <img src="../../assets/time.svg" />
-                        <p>{{ item.time/60 }} min</p>
+                        <p>{{ item.time / 60 }} min</p>
                     </div>
 
                     <img
                         class="before-icon"
                         src="../../assets/mixer.svg"
                         v-if="item.before.length > 0"
+                    />
+                    <img
+                        class="delete"
+                        src="../../assets/delete.png"
+                        @click="removeStep(item)"
                     />
                 </div>
             </div>
@@ -32,7 +38,7 @@ import Divider from "../utils/Divider";
 export default {
     name: "StepsViewport",
     components: { Divider },
-    props: { steps: Array },
+    props: { steps: Array, removeStep: Function },
     methods: {
         getCutVersion(text) {
             const array = text.split(" ");
@@ -41,8 +47,8 @@ export default {
             } else {
                 return array.slice(0, 20).join(" ") + "...";
             }
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -91,6 +97,13 @@ export default {
                 width: 25px;
                 margin-bottom: 5px;
                 margin-left: 10px;
+            }
+
+            .delete {
+                width: 10px;
+                height: 10px;
+                float: right;
+                cursor: pointer;
             }
 
             .icon {

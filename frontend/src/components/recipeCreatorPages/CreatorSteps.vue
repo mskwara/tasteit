@@ -1,6 +1,10 @@
 <template>
     <div id="specify-steps">
-        <steps-viewport :steps="recipe.steps" style="margin-top: 40px" />
+        <steps-viewport
+            :steps="recipe.steps"
+            :removeStep="removeStep"
+            style="margin-top: 40px"
+        />
 
         <div class="current-step">
             <p class="progress-title" style="margin-bottom: 0">Stepper</p>
@@ -118,6 +122,10 @@ export default {
             this.step.optional = false;
             this.stepPartsVisible.before = false;
             this.stepPartsVisible.time = false;
+        },
+        removeStep(step) {
+            const index = this.recipe.steps.indexOf(step);
+            this.recipe.steps.splice(index, 1);
         },
         goToSummary() {
             this.$emit("goToSummary");

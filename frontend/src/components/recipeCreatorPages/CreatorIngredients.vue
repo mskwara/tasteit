@@ -3,6 +3,7 @@
         <ingredients
             :ingredients="recipe.ingredients"
             :portion="recipe.portion"
+            :removeIngredient="removeIngredient"
         />
         <div class="ingredients-creator">
             <p class="progress-title">Specify the ingredients</p>
@@ -89,6 +90,10 @@ export default {
             this.recipe.ingredients.push({ ...this.ingredient });
             this.ingredient.name = "";
             this.ingredient.optional = false;
+        },
+        removeIngredient(ingredient) {
+            const index = this.recipe.ingredients.indexOf(ingredient);
+            this.recipe.ingredients.splice(index, 1);
         },
         setPortions() {
             this.recipe.portion = this.portions;
