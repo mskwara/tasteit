@@ -3,6 +3,22 @@
         <spinner v-if="loading" />
         <div id="recipe" v-else>
             <p class="title">{{ recipe.name }}</p>
+            <my-button
+                class="deleteRecipe"
+                v-if="
+                    recipe.user._id === UserData.id || UserData.role === 'admin'
+                "
+                :text="$t('deleteRecipe')"
+                :click="deleteRecipeDialog"
+            />
+            <img
+                src="../assets/rubbish.png"
+                class="deleteRecipe small-delete-btn"
+                v-if="
+                    recipe.user._id === UserData.id || UserData.role === 'admin'
+                "
+                @click="deleteRecipeDialog"
+            />
             <divider />
             <div class="content">
                 <div class="left">
@@ -38,6 +54,7 @@
                 v-for="review in recipe.reviews"
                 :key="review._id"
                 :review="review"
+                @update-reviews="getRecipe"
             />
         </div>
     </div>
@@ -49,17 +66,21 @@ import Divider from "./utils/Divider";
 import Stepper from "./panels/Stepper";
 import Spinner from "./utils/Spinner";
 import Review from "./panels/Review";
-import { getPhotoFromAWS } from "../services/methods";
+import MyButton from "./utils/MyButton";
+import { getPhotoFromAWS, setRoute } from "../services/methods";
+import UserData from "../services/user-data";
+import EventBus from "../services/event-bus";
 const axios = require("axios");
 
 export default {
     name: "App",
-    components: { Ingredients, Divider, Stepper, Spinner, Review },
+    components: { Ingredients, Divider, Stepper, Spinner, Review, MyButton },
     data() {
         return {
             recipe: {},
             loading: true,
             awsUserAvatar: null,
+            UserData,
         };
     },
     async created() {
@@ -73,11 +94,20 @@ export default {
         }
     },
     methods: {
+        setRoute,
         async getRecipe() {
             const response = await axios.get(
                 `api/v1/recipes/${this.$route.params.id}`
             );
             this.recipe = response.data.data.recipe;
+            // console.log(this.recipe.reviews);
+            this.recipe.reviews.sort((a, b) => {
+                return new Date(b.createdAt) - new Date(a.createdAt);
+            });
+            this.recipe.reviews.forEach((review) => {
+                const locale = new Date(review.createdAt).toLocaleString();
+                review.createdAt = locale;
+            });
         },
         async getAvatarPath() {
             try {
@@ -92,11 +122,38 @@ export default {
                 this.awsUserAvatar = require("../../../backend/public/img/users/default.jpg");
             }
         },
+        deleteRecipeDialog() {
+            EventBus.$emit("show-alert", {
+                title: this.$t("alertTitle8"),
+                content: this.$t("alertContent15"),
+                onClickMethod: this.deleteRecipe,
+            });
+        },
+        async deleteRecipe() {
+            const response = await axios.delete(
+                `api/v1/recipes/${this.recipe._id}`,
+                { data: { recipeAuthorId: this.recipe.user._id } },
+                { withCredentials: true }
+            );
+            if (response.status === 204) {
+                EventBus.$emit("show-alert", {
+                    title: this.$t("alertTitle6"),
+                    content: this.$t("alertContent16"),
+                });
+                this.setRoute("recipes", {});
+            } else {
+                EventBus.$emit("show-alert", {
+                    title: this.$t("alertTitle2"),
+                    content: this.$t("alertContent12"),
+                });
+            }
+        },
     },
 };
 </script>
 
 <style scoped lang="scss">
+@import "../styles/styles.scss";
 .page {
     display: flex;
     flex-direction: column;
@@ -106,6 +163,26 @@ export default {
         align-items: center;
         margin: 20px;
         flex: 1;
+        position: relative;
+
+        .deleteRecipe {
+            position: absolute;
+            right: 20px;
+            top: 5px;
+            background-color: $delete;
+            transition: 0.5s;
+            cursor: pointer;
+            &:hover {
+                background-color: $delete-hover;
+            }
+            &.small-delete-btn {
+                display: none;
+                width: 30px;
+                height: 30px;
+                padding: 5px;
+                border-radius: 50%;
+            }
+        }
 
         .content {
             display: flex;
@@ -154,6 +231,12 @@ export default {
 
 @media only screen and (max-width: 870px) {
     .page #recipe {
+        .deleteRecipe {
+            display: none;
+            &.small-delete-btn {
+                display: initial;
+            }
+        }
         .content {
             flex-direction: column;
             align-items: center;
@@ -174,6 +257,19 @@ export default {
     .page .reviews {
         .title {
             font-size: 30pt;
+        }
+    }
+}
+
+@media only screen and (max-width: 280px) {
+    .page #recipe {
+        .deleteRecipe {
+            &.small-delete-btn {
+                width: 15px;
+                height: 15px;
+                top: 10px;
+                right: 5px;
+            }
         }
     }
 }

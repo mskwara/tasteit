@@ -33,7 +33,7 @@ export default {
         return {
             sidebarStatus: "sidebar-closed",
             UserData,
-            loading: true
+            loading: true,
         };
     },
 
@@ -53,8 +53,9 @@ export default {
             UserData.surname = user.surname;
             UserData.avatar = user.avatar;
             UserData.favourites = user.favourites;
+            UserData.role = user.role;
             EventBus.$emit("show-pop-alert", {
-                content: `${this.$t("pop1")}, ${user.name}!`
+                content: `${this.$t("pop1")}, ${user.name}!`,
             });
         } else {
             UserData.id = null;
@@ -70,7 +71,7 @@ export default {
         EventBus.$on("close-sidebar", () => {
             this.sidebarStatus = "sidebar-closed";
         });
-    }
+    },
 };
 </script>
 

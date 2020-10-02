@@ -25,3 +25,19 @@ exports.createReview = catchAsync(async (req, res, next) => {
         },
     });
 });
+
+exports.deleteReview = catchAsync(async (req, res, next) => {
+    if (
+        req.user._id.toString() !== req.body.reviewAuthorId.toString() &&
+        req.user.role !== "admin"
+    ) {
+        return next(
+            new AppError("You have no permission to delete this review.", 400)
+        );
+    }
+
+    await Review.findOneAndDelete({ _id: req.params.reviewId });
+    res.status(204).json({
+        status: "success",
+    });
+});

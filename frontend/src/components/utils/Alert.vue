@@ -4,7 +4,17 @@
             <p class="title">{{ title }}</p>
             <divider />
             <p class="content">{{ content }}</p>
-            <my-button text="Accept" :click="accept" />
+            <span>
+                <my-button
+                    :text="!onClickMethod ? $t('accept') : $t('cancel')"
+                    :click="accept"
+                />
+                <my-button
+                    :text="$t('accept')"
+                    :click="onClickMethodWrap"
+                    v-if="onClickMethod"
+                />
+            </span>
         </div>
     </div>
 </template>
@@ -22,10 +32,16 @@ export default {
             displayed: false,
             title: null,
             content: null,
+            onClickMethod: null,
         };
     },
     mounted() {
-        EventBus.$on("show-alert", ({ title, content }) => {
+        EventBus.$on("show-alert", ({ title, content, onClickMethod }) => {
+            if (onClickMethod) {
+                this.onClickMethod = onClickMethod;
+            } else {
+                this.onClickMethod = null;
+            }
             this.title = title;
             this.content = content;
             this.displayed = true;
@@ -39,6 +55,10 @@ export default {
         },
         accept() {
             this.displayed = false;
+        },
+        onClickMethodWrap() {
+            this.onClickMethod();
+            this.accept();
         },
     },
 };
@@ -83,6 +103,10 @@ export default {
             max-width: 350px;
             margin: 10px;
         }
+        span {
+            display: flex;
+            justify-content: space-around;
+        }
     }
 }
 
@@ -90,6 +114,7 @@ export default {
     #page #alert {
         width: 300px;
         height: auto;
+        padding-bottom: 10px;
     }
 }
 </style>

@@ -2,6 +2,7 @@ const multer = require("multer");
 const sharp = require("sharp");
 const catchAsync = require("../utilities/catchAsync");
 const Recipe = require("../models/recipeModel");
+const Review = require("../models/reviewModel");
 const User = require("../models/userModel");
 const AppError = require("../utilities/appError");
 const aws = require("aws-sdk");
@@ -105,10 +106,21 @@ exports.createRecipe = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteRecipe = catchAsync(async (req, res, next) => {
-    const recipe = await Recipe.findByIdAndDelete(req.params.id);
+    if (
+        req.user._id.toString() !== req.body.recipeAuthorId.toString() &&
+        req.user.role !== "admin"
+    ) {
+        return next(
+            new AppError("You have no permission to delete this recipe.", 400)
+        );
+    }
+    const recipe = await Recipe.findById(req.params.id);
 
     if (!recipe)
         return next(new AppError("There is no recipe with that id!", 404));
+
+    await Review.deleteMany({ recipe: req.params.id });
+    await Recipe.findByIdAndDelete(req.params.id);
 
     res.status(204).json({
         status: "success",

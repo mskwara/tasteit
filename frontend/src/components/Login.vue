@@ -65,6 +65,7 @@ export default {
                 UserData.email = user.email;
                 UserData.avatar = user.avatar;
                 UserData.favourites = user.favourites;
+                UserData.role = user.role;
                 EventBus.$emit("update-user-data");
                 EventBus.$emit("show-pop-alert", {
                     content: `${this.$t("pop1")}, ${user.name}!`,

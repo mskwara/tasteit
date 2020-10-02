@@ -33,7 +33,7 @@ const reviewSchema = new mongoose.Schema({
 });
 
 // Virtual populate
-reviewSchema.pre(/^find/, function (next) {
+reviewSchema.pre(/^find/, function(next) {
     this.populate({
         path: "user",
         select: "name surname avatar",
@@ -41,7 +41,7 @@ reviewSchema.pre(/^find/, function (next) {
     next();
 });
 
-reviewSchema.statics.calcAverageRatings = async function (recipeId) {
+reviewSchema.statics.calcAverageRatings = async function(recipeId) {
     const stats = await this.aggregate([
         {
             $match: { recipe: recipeId },
@@ -69,9 +69,18 @@ reviewSchema.statics.calcAverageRatings = async function (recipeId) {
     }
 };
 
-reviewSchema.post("save", function () {
+reviewSchema.post("save", function() {
     // this points to current review
     this.constructor.calcAverageRatings(this.recipe);
+});
+
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+    this.rev = await this.findOne();
+    next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+    await this.rev.constructor.calcAverageRatings(this.rev.recipe);
 });
 
 const Review = mongoose.model("Review", reviewSchema);

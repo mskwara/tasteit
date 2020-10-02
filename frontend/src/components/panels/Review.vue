@@ -22,12 +22,21 @@
             </div>
             <div class="content">{{ review.content }}</div>
         </div>
+        <img
+            src="../../assets/delete.png"
+            class="deleteBtn"
+            v-if="review.user._id === UserData.id || UserData.role === 'admin'"
+            @click="deleteReview()"
+        />
     </div>
 </template>
 
 <script>
 import StarRating from "vue-star-rating";
 import { getPhotoFromAWS } from "../../services/methods";
+import UserData from "../../services/user-data";
+import EventBus from "../../services/event-bus.js";
+const axios = require("axios");
 
 export default {
     name: "Review",
@@ -36,6 +45,7 @@ export default {
     data() {
         return {
             photo: null,
+            UserData,
         };
     },
     async mounted() {
@@ -53,7 +63,25 @@ export default {
     },
     methods: {
         getDate(date) {
-            return date.slice(0, 10) + ", " + date.slice(11, 16);
+            return date.slice(0, -3);
+        },
+        async deleteReview() {
+            // console.log(this.review.user._id);
+            const response = await axios.delete(
+                `api/v1/reviews/${this.review._id}`,
+                { data: { reviewAuthorId: this.review.user._id } },
+                { withCredentials: true }
+            );
+            if (response.status === 204) {
+                EventBus.$emit("show-pop-alert", {
+                    content: this.$t("alertContent14"),
+                });
+            } else {
+                EventBus.$emit("show-pop-alert", {
+                    content: this.$t("alertContent12"),
+                });
+            }
+            this.$emit("update-reviews");
         },
     },
 };
@@ -67,9 +95,28 @@ export default {
     border: 1px solid $border-400;
     margin-bottom: 20px;
     background-color: white;
-
+    position: relative;
     display: flex;
     flex-direction: row;
+
+    .deleteBtn {
+        position: absolute;
+        right: -40px;
+        width: 10px;
+        height: 10px;
+        padding: 5px;
+        border-radius: 50%;
+        background-color: white;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        transition: 0.5s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $delete;
+            filter: invert(1) hue-rotate(180deg);
+        }
+    }
 
     .left {
         width: 30%;
@@ -119,6 +166,10 @@ export default {
 @media only screen and (max-width: 870px) {
     #review {
         min-height: 70px;
+
+        .deleteBtn {
+            right: -32px;
+        }
         .left {
             .user-info {
                 .avatar {
@@ -143,6 +194,11 @@ export default {
 @media only screen and (max-width: 540px) {
     #review {
         min-height: 50px;
+
+        .deleteBtn {
+            right: -20px;
+            border: 1px solid gray;
+        }
         .left {
             .user-info {
                 .avatar {
@@ -167,6 +223,11 @@ export default {
 @media only screen and (max-width: 450px) {
     #review {
         min-height: 50px;
+
+        .deleteBtn {
+            right: -20px;
+            top: 7px;
+        }
         .left {
             .user-info {
                 .avatar {

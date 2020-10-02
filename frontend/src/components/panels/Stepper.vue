@@ -86,7 +86,7 @@
                     v-model="review.content"
                 />
             </div>
-            <div class="bottom">
+            <div class="bottom sendingReview">
                 <my-button
                     :text="$t('sendAReview')"
                     :click="sendReview"
@@ -100,6 +100,7 @@
                     :disabled="true"
                     v-else
                 />
+                <Spinner v-if="loadingReview" />
             </div>
         </div>
     </div>
@@ -110,6 +111,7 @@ import Divider from "../utils/Divider";
 import MyButton from "../utils/MyButton";
 import Step from "../utils/Step";
 import Counter from "../utils/Counter";
+import Spinner from "../utils/Spinner";
 import MyTextArea from "../utils/MyTextArea";
 import EventBus from "../../services/event-bus.js";
 import UserData from "../../services/user-data.js";
@@ -118,7 +120,15 @@ const axios = require("axios");
 
 export default {
     name: "Stepper",
-    components: { Divider, MyButton, Step, Counter, MyTextArea, StarRating },
+    components: {
+        Divider,
+        MyButton,
+        Step,
+        Counter,
+        MyTextArea,
+        StarRating,
+        Spinner,
+    },
     props: {
         steps: {
             type: Array,
@@ -140,6 +150,7 @@ export default {
                 rating: null,
             },
             fullRecipe: false,
+            loadingReview: false,
         };
     },
     methods: {
@@ -169,19 +180,19 @@ export default {
         },
         async sendReview() {
             if (!UserData.id) {
-                EventBus.$emit("show-alert", {
-                    title: this.$t("alertTitle2"),
+                EventBus.$emit("show-pop-alert", {
                     content: this.$t("alertContent7"),
                 });
                 return;
             }
+            this.loadingReview = true;
             this.review.user = UserData.id;
             this.review.recipe = this.recipeID;
             await axios.post("api/v1/reviews", this.review, {
                 withCredentials: true,
             });
-            EventBus.$emit("show-alert", {
-                title: this.$t("alertTitle3"),
+            this.loadingReview = false;
+            EventBus.$emit("show-pop-alert", {
                 content: this.$t("alertContent8"),
             });
             this.review.user = "";
@@ -310,6 +321,11 @@ export default {
             justify-content: space-around;
             width: 100%;
             margin-top: 50px;
+
+            &.sendingReview {
+                flex-direction: column;
+                align-items: center;
+            }
 
             .start-buttons {
                 display: flex;

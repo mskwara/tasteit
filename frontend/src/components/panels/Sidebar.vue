@@ -126,10 +126,10 @@ export default {
         changeLanguage() {
             if (i18n.locale === "en") {
                 i18n.locale = "pl";
-                this.$cookie.set("language", "pl");
+                this.$cookie.set("language", "pl", { expires: "5Y" });
             } else if (i18n.locale === "pl") {
                 i18n.locale = "en";
-                this.$cookie.set("language", "en");
+                this.$cookie.set("language", "en", { expires: "5Y" });
             }
             EventBus.$emit("change-language");
         },
