@@ -62,28 +62,28 @@ export default {
         MyButton,
         MySelect,
         RecipeTile,
-        MyFileInput
+        MyFileInput,
     },
     props: {
-        recipe: Object
+        recipe: Object,
     },
     data() {
         return {
             difficulties: [
                 {
                     text: "easy",
-                    value: "easy"
+                    value: "easy",
                 },
                 {
                     text: "medium",
-                    value: "medium"
+                    value: "medium",
                 },
                 {
                     text: "difficult",
-                    value: "difficult"
-                }
+                    value: "difficult",
+                },
             ],
-            photo: null
+            photo: null,
         };
     },
     methods: {
@@ -93,7 +93,7 @@ export default {
             if (checkInfo.status === "fail") {
                 EventBus.$emit("show-alert", {
                     title: checkInfo.error.title,
-                    content: checkInfo.error.content
+                    content: checkInfo.error.content,
                 });
                 return;
             }
@@ -103,34 +103,52 @@ export default {
             EventBus.$emit("recipe-photo-upload", photo);
             var reader = new FileReader();
             let vm = this;
-            reader.onload = async function(event) {
+            reader.onload = async function (event) {
                 // vm.photo = event.target.result;
 
                 var i = new Image();
-                i.src = await event.target.result;
-                // const aspect = i.width / i.height;
-                // if(aspect > 1.6){ // zdjęcie długie w poziomie
+                i.src = event.target.result;
+                i.onload = function () {
+                    const aspect = i.width / i.height;
+                    console.log(aspect, i.width, i.height);
 
-                // }
-
-                Clipper(event.target.result, function() {
-                    this.resize(400)
-                        .crop(
-                            0,
-                            i.height > 250
-                                ? (i.height * (400 / i.width) - 250) / 2
-                                : 0,
-                            400,
-                            250
-                        )
-                        .toDataURL(function(dataUrl) {
-                            vm.photo = dataUrl;
+                    if (aspect > 1.6) {
+                        // zdjęcie długie w poziomie
+                        Clipper(event.target.result, function () {
+                            this.resize(null, 250)
+                                .crop(
+                                    i.width > 400
+                                        ? (i.width * (250 / i.height) - 400) / 2
+                                        : 0,
+                                    0,
+                                    400,
+                                    250
+                                )
+                                .toDataURL(function (dataUrl) {
+                                    vm.photo = dataUrl;
+                                });
                         });
-                });
+                    } else if (aspect < 1.6) {
+                        Clipper(event.target.result, function () {
+                            this.resize(400)
+                                .crop(
+                                    0,
+                                    i.height > 250
+                                        ? (i.height * (400 / i.width) - 250) / 2
+                                        : 0,
+                                    400,
+                                    250
+                                )
+                                .toDataURL(function (dataUrl) {
+                                    vm.photo = dataUrl;
+                                });
+                        });
+                    }
+                };
             };
             reader.readAsDataURL(photo);
-        }
-    }
+        },
+    },
 };
 </script>
 

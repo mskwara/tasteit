@@ -390,6 +390,9 @@ export default {
         .loader {
             padding-top: 4px;
         }
+        .image-information {
+            margin-top: -10px;
+        }
     }
 }
 @media only screen and (max-width: 320px) {
@@ -428,6 +431,9 @@ export default {
         .favourite {
             width: 30px;
             height: 30px;
+        }
+        .image-information {
+            margin-top: -15px;
         }
     }
 }
