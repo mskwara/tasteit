@@ -1,4 +1,4 @@
-https://tasteitapp.herokuapp.com
+https://tasteitapp.herokuapp.com<br>
 The TasteIt web application is created in Vue.js as front-end and Node.js (MongoDB) as backend. The application has wide range of functionality:
 <ul>
   <li>Create an account with avatar</li>
