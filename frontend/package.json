@@ -10,7 +10,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.14.0",
         "aws-sdk": "^2.761.0",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "core-js": "^3.6.4",
         "image-clipper": "^0.4.4",
         "resize-img": "^2.0.0",
