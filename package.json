@@ -14,7 +14,7 @@
         "@vue/cli-plugin-eslint": "~4.3.0",
         "@vue/cli-service": "^4.4.6",
         "aws-sdk": "^2.761.0",
-        "axios": "^0.19.2",
+        "axios": "^0.21.1",
         "babel-eslint": "^10.1.0",
         "bcrypt": "^4.0.1",
         "concurrently": "^5.2.0",
