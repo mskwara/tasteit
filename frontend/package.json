@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.14.0",
-        "aws-sdk": "^2.761.0",
+        "aws-sdk": "^2.814.0",
         "axios": "^0.19.2",
         "core-js": "^3.6.4",
         "image-clipper": "^0.4.4",
